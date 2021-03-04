@@ -1,6 +1,6 @@
 # Bioinformatics Benchmark Suite
 
-A suite for testing bioinformatics tools.
+A suite for testing bioinformatics tools. Be sure to check a suite's individual README for any additional requirements. Their README's are stored in their individual folders located [here](./biobesu/suite)
 
 ## How-to
 ### Install
