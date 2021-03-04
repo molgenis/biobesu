@@ -10,7 +10,7 @@ setup(
     keywords=['benchmark', 'bioinformatics'],
     packages=find_namespace_packages(),
     version="0.1.0-SNAPSHOT",
-    license='',
+    license='GNU Lesser General Public License v3 (LGPLv3)',
     author="MOLGENIS development team",
     author_email="molgenis@gmail.com",
     description="Bioinformatics Benchmark Suite",
@@ -40,6 +40,7 @@ setup(
     },
     classifiers=[
         "Programming Language :: Python :: 3",
-        "Operating System :: OS Independent"
+        "Operating System :: OS Independent",
+        "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)"
     ]
 )
