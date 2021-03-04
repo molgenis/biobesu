@@ -5,6 +5,7 @@ from os import listdir
 from re import search
 from biobesu.helper import validate
 from biobesu.helper.generic import create_dir
+from biobesu.helper.generic import eprint
 from biobesu.suite.hpo_generank.helper.converters import LiricalGeneAliasConverter
 from biobesu.suite.hpo_generank.helper.converters import LiricalOmimConverter
 from biobesu.helper.converters import GeneConverter
@@ -149,20 +150,20 @@ def __convert_lirical_extractions(args, lirical_gene_alias_file, lirical_omims_f
     final_header = "id\tgene_symbol\n"
 
     # Route 1 to gene symbols.
+    print("Retrieve genes through gene aliases...")
     missing = __convert_lirical_output_digest(LiricalGeneAliasConverter(args.lirical_data + "Homo_sapiens_gene_info.gz").alias_to_gene_symbol,
                                               lirical_gene_alias_file, converted_gene_alias_file, final_header)
-    print("Failed to convert these gene aliases to gene symbols: {}\n".format(missing))
+    eprint("Failed to convert these gene aliases to gene symbols: {}\n".format(missing))
 
     # Route 2 to gene symbols.
-    # omim_converter = LiricalOmimConverter(args.lirical_data + "mim2gene_medgen")
+    print("Retrieve genes through OMIM...")
     missing = __convert_lirical_output_digest(LiricalOmimConverter(args.lirical_data + "mim2gene_medgen").omim_to_gene_id,
                                               lirical_omims_file, converted_omim_intermediate, "id\tgene_id\n")
-    print("Failed to convert these OMIMs to gene IDs: {}\n".format(missing))
+    eprint("Failed to convert these OMIMs to gene IDs: {}\n".format(missing))
 
-    # gene_id_converter = GeneConverter(args.runner_data)
     missing = __convert_lirical_output_digest(GeneConverter(args.runner_data).id_to_symbol,
                                               converted_omim_intermediate, converted_omim_file, final_header)
-    print("Failed to convert these gene IDs to gene symbols: {}\n".format(missing))
+    eprint("Failed to convert these gene IDs to gene symbols: {}\n".format(missing))
 
 
 def __convert_lirical_output_digest(convert_method, input_file, output_file, output_file_header):
