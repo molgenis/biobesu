@@ -1,6 +1,6 @@
 # Bioinformatics Benchmark Suite
 
-A suite for testing bioinformatics tools. Be sure to check a suite's individual README for any additional requirements. Their README's are stored in their individual folders located [here](./biobesu/suite)
+A suite for testing bioinformatics tools. Be sure to check a suite's individual README for any additional requirements. Their README's are stored in their individual folders located [here](./biobesu/suite).
 
 ## How-to
 ### Install
@@ -11,7 +11,8 @@ pip install .
 ```
 
 ### Use
-```
+
+```bash
 # General format
 biobesu <suite> <runner> --<runner_argument> [--<runner_optional_argument>]
 
@@ -22,12 +23,16 @@ biobesu
 biobesu <suite>
 ```
 
-Examples:
-```
-biobesu hpo_generank lirical --jar /path/to/LIRICAL.jar \
+Example:
+```bash
+# Prepare lirical.
+java -jar LIRICAL.jar download
+
+# Run lirical with benchmark data.
+biobesu hpo_generank lirical --jar /path/to/lirical-1.3.0/LIRICAL.jar \
 --hpo /path/to/hp.obo --input /path/to/benchmark_data.tsv \
 --output /path/to/dir/output --lirical_data /path/to/dir/lirical/data \
---lirical_exomiser /path/to/dir/2102_hg19
+--runner_data /path/to/tmp/dir/
 ```
 
 ## Developers (work-in-progress)

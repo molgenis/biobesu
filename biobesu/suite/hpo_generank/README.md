@@ -11,7 +11,7 @@ id  gene_symbol    hpo_ids
 
 1. [Download](lirical_download) lirical (tested with v1.3.0).
 
-2. Ensure [lirical downloaded][lirical_prepare] its required files.
+2. Run `java -jar LIRICAL.jar download` (see [here][lirical_prepare] for more information).
 
 3. Run lirical:
 
