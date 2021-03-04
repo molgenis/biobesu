@@ -36,6 +36,14 @@ def retrieve_entry_point(name):
 
 
 def create_dir(dir_path, exist_allowed=False):
+    """
+    Create a dir and returns its path.
+    :param dir_path: the path to the dir to be created
+    :param exist_allowed: if False, throws an error if directory already exists
+    :return: the path to the created directory
+    :raises OSError: if exist_ok==False and directory already exists
+    """
+
     makedirs(dir_path, exist_ok=exist_allowed)
     return dir_path
 

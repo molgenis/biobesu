@@ -5,6 +5,7 @@ from unittest.mock import mock_open
 from biobesu.helper import converters
 
 class TestPhenotypeConverter:
+    # Snippet from hpo.obo file.
     hpo_obo = """format-version: 1.2
 data-version: releases/2018-03-08
 
@@ -39,6 +40,7 @@ is_a: HP:0010460 ! Abnormality of the female genitalia
 
 
 class TestGeneConverter:
+    # Snippet from genenames.org custom download file.
     gene_info_file = """NCBI Gene ID	Approved symbol
 1	A1BG
 2	A2M

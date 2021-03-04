@@ -6,8 +6,33 @@ import requests
 
 
 class Converter:
+    """
+    Superclass for converters that contains general methods.
+    """
+
     @staticmethod
     def key_to_value(keys, conversion_dict, include_na=False):
+        """
+        Converts a key to a value using a conversion dict.
+
+        If keys is a String, a String is returned containing the converted value or None if no value was found.
+
+        If keys is a list, a tuple is returned with as first element a list with the found values (and NAs if
+        include_na=true), and as second element a set with strings for which no conversion value was found.
+
+        If include_na==True, then the returned list will contain an "NA" in the position of an item for which no
+        conversion value could be found. Otherwise, these are simply left out.
+
+        :param keys: the item(s) that need to be converted
+        :type keys: str | list[str]
+        :param conversion_dict: dict to use for conversion
+        :type conversion_dict: dict[str,str]
+        :param include_na: whether missing results should be returned in the output as "NA"
+        :type include_na: bool
+        :return: the converted keys
+        :rtype: str | None | tuple[list[str],set[str]]
+        """
+
         if type(keys) is list:
             values = []
             missing = set()
@@ -29,6 +54,10 @@ class Converter:
 
 
 class PhenotypeConverter(Converter):
+    """
+    Converter for phenotype data.
+    """
+
     def __init__(self, hpo_obo):
         # Defines dictionaries for fast retrieval.
         self.names_by_id = {}
@@ -41,6 +70,14 @@ class PhenotypeConverter(Converter):
         self.read_hpo_obo(hpo_obo)
 
     def read_hpo_obo(self, hpo_obo):
+        """
+        Read the HPO obo file used as source for conversion.
+
+        :param hpo_obo: path to hpo_obo file
+        :type hpo_obo: str
+        :return:
+        """
+
         # Match terms for header.
         match_version = 'data-version:'
 
@@ -81,12 +118,43 @@ class PhenotypeConverter(Converter):
                     added = True
 
     def id_to_name(self, hpo_ids, include_na=False):
+        """
+        Convert a (list of) phenotype ID(s) to its/their name.
+
+        :param hpo_ids: (list of) phenotype(s) to convert
+        :type hpo_ids: str | list[str]
+        :param include_na:  replace IDs with no match with "NA" in the returned output
+        :type include_na: bool
+        :return (str, None or tuple): the converted keys
+        :rtype: str | None | tuple[list[str],set[str]]
+        """
+
         return self.key_to_value(hpo_ids, self.names_by_id, include_na)
 
     def name_to_id(self, hpo_names, include_na=False):
+        """
+        Convert a (list of) phenotype name(s) to its/their ID.
+        :param hpo_names: (list of) phenotype(s) to convert
+        :type hpo_names: str | list[str]
+        :param include_na: replace IDs with no match with "NA" in the returned output
+        :type include_na: bool
+        :return: the converted keys
+        :rtype: str | None | tuple[list[str],set[str]]
+        """
+
         return self.key_to_value(hpo_names, self.id_by_names, include_na)
 
     def id_to_phenopacket(self, phenopacket_id, phenotype_ids):
+        """
+        Convert a list of phenotype IDs to a phenopacket.
+        :param phenopacket_id: the ID to be used for the phenopacket
+        :type phenopacket_id str
+        :param phenotype_ids: the phenotypes to convert
+        :type phenotype_ids: list[str]
+        :return: a JSON-formatted phenopacket string
+        :rtype: str
+        """
+
         # Writes opening bracket.
         output_string = '{'
 
@@ -130,10 +198,12 @@ class PhenotypeConverter(Converter):
 
 class GeneConverter(Converter):
     """
-    If existing file is used, assumes it was downloaded through this class previously. Watch out with a manually
-    downloaded file!
+    Converter for gene data.
 
+    Makes use of a file that is downloaded from genenames if not already found in the given directory. If a file with
+    the expected name is already present in the directory, assumes it was downloaded through this class previously.
     """
+
     # Download URL (ordered by gene ID).
     download_file = 'https://www.genenames.org/cgi-bin/download/custom?col=gd_pub_eg_id&col=gd_app_sym' \
                     '&status=Approved&status=Entry%20Withdrawn&hgnc_dbtag=on&order_by=gd_pub_eg_id' \
@@ -163,11 +233,21 @@ class GeneConverter(Converter):
         self.__read_file()
 
     def __download_info_file(self):
+        """
+        Downloads needed conversion file and writes it the the given directory.
+        :return:
+        """
+
         with requests.get(self.download_file, allow_redirects=True) as r:
             with open(self.gene_file, 'x') as file_writer:
                 file_writer.write(r.content.decode('utf-8'))
 
     def __read_file(self):
+        """
+        Digests the conversion file.
+        :return:
+        """
+
         # Goes through the file.
         for counter, line in enumerate(open(self.gene_file)):
             # Validates if all expected columns are present and in expected order.
@@ -195,7 +275,27 @@ class GeneConverter(Converter):
                     self.symbol_by_id[gene_id] = gene_symbol
 
     def id_to_symbol(self, gene_ids, include_na=False):
+        """
+        Convert a (list of) gene id(s) to its/their symbol.
+        :param gene_ids: (list of) gene(s) to convert
+        :type gene_ids: str | list[str]
+        :param include_na: replace IDs with no match with "NA" in the returned output
+        :type include_na: bool
+        :return: the converted keys
+        :rtype: str | None | tuple[list[str],set[str]]
+        """
+
         return self.key_to_value(gene_ids, self.symbol_by_id, include_na)
 
     def symbol_to_id(self, gene_symbols, include_na=False):
+        """
+        Convert a (list of) gene symbol(s) to its/their ID.
+        :param gene_symbols: (list of) gene(s) to convert
+        :type gene_symbols: str | list[str]
+        :param include_na: replace IDs with no match with "NA" in the returned output
+        :type include_na: bool
+        :return: the converted keys
+        :rtype: str | None | tuple[list[str],set[str]]
+        """
+
         return self.key_to_value(gene_symbols, self.id_by_symbol, include_na)

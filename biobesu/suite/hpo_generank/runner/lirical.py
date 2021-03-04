@@ -15,9 +15,13 @@ from biobesu.helper.converters import PhenotypeConverter
 def main(parser):
     args = __parse_command_line(parser)
     try:
+        # Generate phenopackets.
         phenopackets_dir = __generate_phenopacket_files(args)
+        # Run lirical.
         lirical_output_dir = __run_lirical(args, phenopackets_dir)
+        # Extract relevant fields from lirical output.
         lirical_gene_alias_file, lirical_omims_file = __extract_from_lirical_output(args, lirical_output_dir)
+        # Convert output to genes.
         __convert_lirical_extractions(args, lirical_gene_alias_file, lirical_omims_file)
     except FileExistsError as e:
         print("\nAn output file/directory already exists: " + e.filename + "\nExiting...")
