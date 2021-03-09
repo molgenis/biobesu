@@ -75,7 +75,6 @@ class PhenotypeConverter(Converter):
 
         :param hpo_obo: path to hpo_obo file
         :type hpo_obo: str
-        :return:
         """
 
         # Match terms for header.
@@ -235,7 +234,6 @@ class GeneConverter(Converter):
     def __download_info_file(self):
         """
         Downloads needed conversion file and writes it the the given directory.
-        :return:
         """
 
         with requests.get(self.download_file, allow_redirects=True) as r:
@@ -245,7 +243,6 @@ class GeneConverter(Converter):
     def __read_file(self):
         """
         Digests the conversion file.
-        :return:
         """
 
         # Goes through the file.

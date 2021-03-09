@@ -5,10 +5,14 @@ import gzip
 
 
 class LiricalGeneAliasConverter(Converter):
-    def __init__(self, omim2gene_file):
-        self.gene_info_dict = self.__read_gene_info(omim2gene_file)
+    """
+    Converts gene aliases to gene symbols through the LIRICAL supplied "Homo_sapiens_gene_info.gz" file.
+    """
 
-    def __read_gene_info(self, file_path):
+    def __init__(self, gene_info_file):
+        self.gene_info_dict = self.__read_file(gene_info_file)
+
+    def __read_file(self, file_path):
         gene_info_dict = {}
 
         with gzip.open(file_path, 'rt') as file:
@@ -24,14 +28,29 @@ class LiricalGeneAliasConverter(Converter):
         return gene_info_dict
 
     def alias_to_gene_symbol(self, gene_aliases, include_na=False):
+        """
+        Convert a (list of) gene alias(es) to its/their gene symbol(s).
+
+        :param gene_aliases: (list of) gene alias(es) to convert
+        :type gene_aliases: str | list[str]
+        :param include_na:  replace IDs with no match with "NA" in the returned output
+        :type include_na: bool
+        :return (str, None or tuple): the converted keys
+        :rtype: str | None | tuple[list[str],set[str]]
+        """
+        
         return self.key_to_value(gene_aliases, self.gene_info_dict, include_na)
 
 
 class LiricalOmimConverter(Converter):
-    def __init__(self, omim2gene_file):
-        self.omim_dict = self.__read_omim2gene(omim2gene_file)
+    """
+    Converts OMIM to gene IDs through the LIRICAL supplied "mim2gene_medgen" file.
+    """
 
-    def __read_omim2gene(self, file_path):
+    def __init__(self, mim2gene_medgen_file):
+        self.omim_dict = self.__read_file(mim2gene_medgen_file)
+
+    def __read_file(self, file_path):
         omim_dict = {}
 
         with open(file_path) as file:
@@ -43,4 +62,15 @@ class LiricalOmimConverter(Converter):
         return omim_dict
 
     def omim_to_gene_id(self, omims, include_na=False):
+        """
+        Convert a (list of) omim(s) to its/their gene ID(s).
+
+        :param omims: (list of) omim(s) to convert
+        :type omims: str | list[str]
+        :param include_na:  replace IDs with no match with "NA" in the returned output
+        :type include_na: bool
+        :return (str, None or tuple): the converted keys
+        :rtype: str | None | tuple[list[str],set[str]]
+        """
+
         return self.key_to_value(omims, self.omim_dict, include_na)
