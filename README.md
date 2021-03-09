@@ -2,7 +2,15 @@
 
 A suite for testing bioinformatics tools. Be sure to check a suite's individual README for any additional requirements. Their README's are stored in their individual folders located [here](./biobesu/suite).
 
+## Requirements
+
+- python 3.3 or higher
+- pip
+
+Furthermore, ensure that the python `/bin` folder is added to `$PATH` in `.bash_profile` so that the tool will be executable from the command line.
+
 ## How-to
+
 ### Install
 ```bash
 git clone git@github.com:molgenis/biobesu.git
