@@ -11,7 +11,7 @@ def test_lirical_file_digestion():
                     '200\ta Syndrome\tOMIM:848484\t1/7987\t0,00%\t0\tn/a\tn/a\n',
                     '450\tJust something more; BDBS5\tOMIM:112358\t1/7987\t0,00%\t0\tn/a\tn/a\n']
 
-    expected_output = (['ABC1', 'BDBS5'],['123456', '848484', '112358'])
+    expected_output = (['ABC1', 'BDBS5'], ['123456', '848484', '112358'])
     actual_output = __extract_fields_from_lirical_data(input_string)
 
     assert actual_output == expected_output
