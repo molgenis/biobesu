@@ -11,6 +11,10 @@ from biobesu.suite.hpo_generank.helper.converters import LiricalOmimConverter
 from biobesu.helper.converters import GeneConverter
 from biobesu.helper.converters import PhenotypeConverter
 
+# Used only for docstring
+from argparse import ArgumentParser
+from _io import TextIOWrapper
+
 
 def main(parser):
     args = __parse_command_line(parser)
@@ -28,6 +32,15 @@ def main(parser):
 
 
 def __parse_command_line(parser):
+    """
+    Parsers the command line
+
+    :param parser: the argument parser
+    :type parser: ArgumentParser
+    :return: the parsed arguments
+    :rtype:
+    """
+
     # Adds runner-specific command line.
     parser.add_argument("--jar", required=True, help="location of LIRICAL .jar file")
     parser.add_argument("--hpo", required=True, help="hpo.obo file")
@@ -56,6 +69,14 @@ def __parse_command_line(parser):
 
 
 def __generate_phenopacket_files(args):
+    """
+    Generates the phenopacket files from the benchmark data.
+
+    :param args: the parsed arguments
+    :return: the directory containing the phenopacket files
+    :rtype: str
+    """
+
     phenopackets_dir = create_dir(args.output + "phenopackets/")
     converter = PhenotypeConverter(args.hpo)
 
@@ -81,6 +102,16 @@ def __generate_phenopacket_files(args):
 
 
 def __run_lirical(args, phenopackets_dir):
+    """
+    Runs lirical for each phenopacket file.
+
+    :param args: the parsed arguments
+    :param phenopackets_dir: the directory containing the phenopacket files
+    :param phenopackets_dir: str
+    :return: the directory containing the LIRICAL output
+    :rtype: str
+    """
+
     lirical_output_dir = create_dir(args.output + "lirical_output/")
 
     # Run tool for each input file.
@@ -94,6 +125,16 @@ def __run_lirical(args, phenopackets_dir):
 
 
 def __extract_from_lirical_output(args, lirical_output_dir):
+    """
+    Extracts the relevant information from the LIRICAL output.
+
+    :param args: the parsed arguments
+    :param lirical_output_dir: the directory containing the LIRICAL output
+    :type lirical_output_dir: str
+    :return: 2 file paths, one to the gene alias file and one to the omim file
+    :rtype: tuple[str,str]
+    """
+
     extract_dir = create_dir(args.output + "lirical_extraction/")
     lirical_gene_alias_file = extract_dir + "lirical_gene_alias.tsv"
     lirical_omims_file = extract_dir + "lirical_omim.tsv"
@@ -123,6 +164,15 @@ def __extract_from_lirical_output(args, lirical_output_dir):
 
 
 def __extract_fields_from_lirical_data(file_data):
+    """
+    Extracts the gene aliases & omim codes from an opened file.
+
+    :param file_data: the opened file (or list of strings representing the file)
+    :type file_data: TextIOWrapper | list[str]
+    :return: the found gene aliases & omim codes
+    :rtype: tuple[list[str],list[str]]
+    """
+
     genes = []
     omims = []
     header = True
@@ -147,6 +197,16 @@ def __extract_fields_from_lirical_data(file_data):
 
 
 def __convert_lirical_extractions(args, lirical_gene_alias_file, lirical_omims_file):
+    """
+    Converts the LIRICAL extracts to a more usable format.
+
+    :param args: the parsed arguments
+    :param lirical_gene_alias_file: the path to the file containing the extracted gene aliases
+    :type lirical_gene_alias_file: str
+    :param lirical_omims_file: the path to the file containing the extracted gene aliases
+    :type lirical_omims_file: str
+    """
+
     conversion_dir = create_dir(args.output + "lirical_conversion/")
     converted_gene_alias_file = conversion_dir + "lirical_gene_alias_converted.tsv"
     converted_omim_intermediate = conversion_dir + "lirical_omim_gene_id.tsv"
@@ -155,22 +215,40 @@ def __convert_lirical_extractions(args, lirical_gene_alias_file, lirical_omims_f
 
     # Route 1 to gene symbols.
     print("Retrieve genes through gene aliases...")
-    missing = __convert_lirical_output_digest(LiricalGeneAliasConverter(args.lirical_data + "Homo_sapiens_gene_info.gz").alias_to_gene_symbol,
-                                              lirical_gene_alias_file, converted_gene_alias_file, final_header)
+    missing = __convert_lirical_output_digest(LiricalGeneAliasConverter(args.lirical_data + "Homo_sapiens_gene_info.gz")
+                                              .alias_to_gene_symbol, lirical_gene_alias_file, converted_gene_alias_file,
+                                              final_header)
     eprint("Failed to convert these gene aliases to gene symbols: {}\n".format(missing))
 
     # Route 2 to gene symbols.
     print("Retrieve genes through OMIM...")
-    missing = __convert_lirical_output_digest(LiricalOmimConverter(args.lirical_data + "mim2gene_medgen").omim_to_gene_id,
-                                              lirical_omims_file, converted_omim_intermediate, "id\tgene_id\n")
+    missing = __convert_lirical_output_digest(LiricalOmimConverter(args.lirical_data + "mim2gene_medgen")
+                                              .omim_to_gene_id, lirical_omims_file, converted_omim_intermediate,
+                                              "id\tgene_id\n")
     eprint("Failed to convert these OMIMs to gene IDs: {}\n".format(missing))
 
-    missing = __convert_lirical_output_digest(GeneConverter(args.runner_data).id_to_symbol,
-                                              converted_omim_intermediate, converted_omim_file, final_header)
+    missing = __convert_lirical_output_digest(GeneConverter(args.runner_data).id_to_symbol, converted_omim_intermediate,
+                                              converted_omim_file, final_header)
     eprint("Failed to convert these gene IDs to gene symbols: {}\n".format(missing))
 
 
 def __convert_lirical_output_digest(convert_method, input_file, output_file, output_file_header):
+    """
+    Converts the input using the specified converter.
+
+    :param convert_method: the method (which should be from a subclass of Converter that implements a wrapper for
+                           `Converter.key_to_value()`) to be used for conversion
+    :type convert_method:
+    :param input_file: path to the file that should be converted
+    :type input_file: str
+    :param output_file: file path to where the output should be written to
+    :type output_file: str
+    :param output_file_header: the header line to be used for the file
+    :type output_file_header: str
+    :return: the values that could not be converted
+    :rtype: set[str]
+    """
+
     # Set for collecting aliases without a symbol.
     all_missing = set()
 

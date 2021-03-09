@@ -3,7 +3,7 @@
 from biobesu.suite.hpo_generank.runner.lirical import __extract_fields_from_lirical_data
 
 
-def test_lirical_file_digestion():
+def test_extract_fields_from_lirical_data():
     input_string = ['! LIRICAL line 1\n',
                     '! LIRICAL line 2\n',
                     'rank\tdiseaseName\tdiseaseCurie\tpretestprob\tposttestprob\tcompositeLR\tentrezGeneId\tvariants\n',
