@@ -4,7 +4,7 @@ A suite for testing bioinformatics tools. Be sure to check a suite's individual 
 
 ## Requirements
 
-- python 3.3 or higher
+- python 3.8 or higher
 - pip
 
 Furthermore, ensure that the python `/bin` folder is added to `$PATH` in `.bash_profile` so that the tool will be executable from the command line.
