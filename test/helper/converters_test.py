@@ -116,7 +116,7 @@ class TestGeneConverter:
 
     @patch('builtins.open', new_callable=mock_open, read_data=gene_info_file)
     def test_id_to_symbol_single(self, mock_open):
-        converter = converters.GeneConverter('path/to/file')
+        converter = converters.GeneConverter('path/to/dir')
 
         input_data = '9'
         expected_output = 'NAT1'
@@ -126,7 +126,7 @@ class TestGeneConverter:
 
     @patch('builtins.open', new_callable=mock_open, read_data=gene_info_file)
     def test_id_to_symbol_list(self, mock_open):
-        converter = converters.GeneConverter('/path/to/file')
+        converter = converters.GeneConverter('/path/to/dir')
 
         input_data = ['10', '3']
         expected_output = (['NAT2', 'A2MP1'], set())
@@ -136,7 +136,7 @@ class TestGeneConverter:
 
     @patch('builtins.open', new_callable=mock_open, read_data=gene_info_file)
     def test_id_to_symbol_list_with_missing(self, mock_open):
-        converter = converters.GeneConverter('/path/to/file')
+        converter = converters.GeneConverter('/path/to/dir')
 
         input_data = ['10', '3', '14']
         expected_output = (['NAT2', 'A2MP1'], {'14'})
@@ -146,7 +146,7 @@ class TestGeneConverter:
 
     @patch('builtins.open', new_callable=mock_open, read_data=gene_info_file)
     def test_symbol_to_id(self, mock_open):
-        converter = converters.GeneConverter('path/to/file')
+        converter = converters.GeneConverter('path/to/dir')
 
         input_data = 'NAT1'
         expected_output = '9'
