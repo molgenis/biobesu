@@ -18,7 +18,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/molgenis/biobesu",
     # download_url = '',
-    python_requires='>=3.3',
+    python_requires='>=3.8',
     install_requires=[
         'requests'
     ],
