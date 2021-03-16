@@ -31,7 +31,9 @@ biobesu
 biobesu <suite>
 ```
 
-Example:
+There are several scripts which can be executed directly. Do note that some of these require `entry_points` from the `setup.py` to function correctly, so installing biobesu with pip is still required.
+
+**Example:**
 ```bash
 # Prepare lirical.
 java -jar LIRICAL.jar download
@@ -59,6 +61,8 @@ pytest test/
 3. Open the project folder in Intellij IDEA.
 4. Go to "File -> Project Structure -> SDKs" and select/create a Python virtual environment.
 5. Open `setup.py` and install any missing packages.
+
+For scripts that can be run independently, you can set up run configurations to easily test these scripts.
 
 ### Structure
 

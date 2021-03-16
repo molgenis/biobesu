@@ -10,6 +10,7 @@ from biobesu.suite.hpo_generank.helper.converters import LiricalGeneAliasConvert
 from biobesu.suite.hpo_generank.helper.converters import LiricalOmimConverter
 from biobesu.helper.converters import GeneConverter
 from biobesu.helper.converters import PhenotypeConverter
+from biobesu.helper.argument_parser import BiobesuParser
 
 # Used only for docstring
 from argparse import ArgumentParser
@@ -272,3 +273,7 @@ def __convert_lirical_output_digest(convert_method, input_file, output_file, out
                 all_missing.update(missing)
 
     return missing
+
+
+if __name__ == '__main__':
+    main(BiobesuParser())

@@ -11,10 +11,14 @@ def main():
 
     # Defines global command line.
     parser = BiobesuParser(formatter_class=RawTextHelpFormatter, add_help=False)
-    parser.add_argument("suite", help="the chosen benchmark suite:\n" + '\n'.join(suites))
+    parser.add_argument('suite', help='the chosen benchmark suite:\n' + '\n'.join(suites))
 
     # Processes command line.
     args, unknown_args = parser.parse_known_args()
 
     # Run selected suite.
     suites[args.suite](parser)
+
+
+if __name__ == '__main__':
+    main()
