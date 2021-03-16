@@ -49,7 +49,7 @@ biobesu hpo_generank lirical --jar /path/to/lirical-1.3.0/LIRICAL.jar \
 ```bash
 git clone git@github.com:molgenis/biobesu.git
 cd biobesu
-pip install --editable .[test]
+pip install --editable '.[test]'
 pytest test/
 ```
 
