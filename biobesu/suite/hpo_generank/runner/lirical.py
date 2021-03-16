@@ -94,10 +94,8 @@ def __generate_phenopacket_files(args):
         output_string = converter.id_to_phenopacket(line[0], line[2].split(','))
 
         # Write output.
-        file_writer = open(phenopackets_dir + line[0] + '.json', 'w')
-        file_writer.write(output_string)
-        file_writer.flush()
-        file_writer.close()
+        with open(phenopackets_dir + line[0] + '.json', 'w') as file_writer:
+            file_writer.write(output_string)
 
     return phenopackets_dir
 
