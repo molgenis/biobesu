@@ -65,28 +65,33 @@ is_a: HP:0025487 ! Abnormality of bladder morphology
         # Created string is empty to evade test failing due to different timestamps.
         expected_output = '{' \
             '\n\t"id": "01234",' \
-            '\n\t"phenotypic_features": [{' \
-            '\n\t\t"type": {' \
-            '\n\t\t\t"id": "HP:0000008",' \
-            '\n\t\t\t"label": "Abnormality of female internal genitalia"' \
+            '\n\t"phenotypic_features": [' \
+            '\n\t\t{' \
+            '\n\t\t\t"type": {' \
+            '\n\t\t\t\t"id": "HP:0000008",' \
+            '\n\t\t\t\t"label": "Abnormality of female internal genitalia"' \
+            '\n\t\t\t}' \
+            '\n\t\t},' \
+            '\n\t\t{' \
+            '\n\t\t\t"type": {' \
+            '\n\t\t\t\t"id": "HP:0000015",' \
+            '\n\t\t\t\t"label": "Bladder diverticulum"' \
+            '\n\t\t\t}' \
             '\n\t\t}' \
-            '\n\t}, {' \
-            '\n\t\t"type": {' \
-            '\n\t\t\t"id": "HP:0000015",' \
-            '\n\t\t\t"label": "Bladder diverticulum"' \
-            '\n\t\t}' \
-            '\n\t}],' \
+            '\n\t],' \
             '\n\t"meta_data": {' \
             '\n\t\t"created": "",' \
             '\n\t\t"created_by": "biobesu",' \
-            '\n\t\t"resources": [{' \
-            '\n\t\t\t"id": "hp",' \
-            '\n\t\t\t"name": "Human Phenotype Ontology",' \
-            '\n\t\t\t"namespacePrefix": "HP",' \
-            '\n\t\t\t"url": "http://purl.obolibrary.org/obo/hp.owl",' \
-            '\n\t\t\t"version": "2018-03-08",' \
-            '\n\t\t\t"iriPrefix": "http://purl.obolibrary.org/obo/HP_"' \
-            '\n\t\t}]' \
+            '\n\t\t"resources": [' \
+            '\n\t\t\t{' \
+            '\n\t\t\t\t"id": "hp",' \
+            '\n\t\t\t\t"name": "Human Phenotype Ontology",' \
+            '\n\t\t\t\t"namespacePrefix": "HP",' \
+            '\n\t\t\t\t"url": "http://purl.obolibrary.org/obo/hp.owl",' \
+            '\n\t\t\t\t"version": "2018-03-08",' \
+            '\n\t\t\t\t"iriPrefix": "http://purl.obolibrary.org/obo/HP_"' \
+            '\n\t\t\t}' \
+            '\n\t\t]' \
             '\n\t}' \
             '\n}'
 

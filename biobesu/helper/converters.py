@@ -2,6 +2,7 @@
 
 from datetime import datetime
 from biobesu.helper import validate
+from json import dumps
 import requests
 
 
@@ -154,45 +155,36 @@ class PhenotypeConverter(Converter):
         :rtype: str
         """
 
-        # Writes opening bracket.
-        output_string = '{'
+        # Create json dict with id.
+        json_dict = {"id": phenopacket_id}
 
-        # Convert row id to phenopackets.
-        output_string += '\n\t"id": "' + phenopacket_id + '",' + \
-                         '\n\t"phenotypic_features": ['
-
-        # Converts phenotypes phenopackets.
+        # Add phenotype information to json dict.
+        phenotypic_features = []
         for i, phenotype_id in enumerate(phenotype_ids):
-            output_string += '{' \
-                             '\n\t\t"type": {' \
-                             '\n\t\t\t"id": "' + phenotype_id + '",' + \
-                             '\n\t\t\t"label": "' + self.names_by_id[phenotype_id] + '"' + \
-                             '\n\t\t}' \
-                             '\n\t}'
-            if i < len(phenotype_ids)-1:
-                output_string += ', '
+            phenotypic_features.append({
+                'type': {
+                    'id': phenotype_id,
+                    'label': self.names_by_id[phenotype_id]
+                }
+            })
+        json_dict['phenotypic_features'] = phenotypic_features
 
-        # Closing bracket for phenotypicFeatures.
-        output_string += '],'
+        # Adds metadata to json dict.
+        json_dict['meta_data'] = {
+            'created': datetime.utcnow().isoformat()+'Z',
+            'created_by': 'biobesu',
+            'resources': [{
+                'id': 'hp',
+                'name': 'Human Phenotype Ontology',
+                'namespacePrefix': 'HP',
+                'url': 'http://purl.obolibrary.org/obo/hp.owl',
+                'version': self.hpo_obo_version,
+                'iriPrefix': 'http://purl.obolibrary.org/obo/HP_'
+            }]
+        }
 
-        # Add metadata.
-        output_string += '\n\t"meta_data": {' \
-                         '\n\t\t"created": "' + datetime.utcnow().isoformat() + 'Z",' + \
-                         '\n\t\t"created_by": "biobesu",' \
-                         '\n\t\t"resources": [{' \
-                         '\n\t\t\t"id": "hp",' \
-                         '\n\t\t\t"name": "Human Phenotype Ontology",' \
-                         '\n\t\t\t"namespacePrefix": "HP",' \
-                         '\n\t\t\t"url": "http://purl.obolibrary.org/obo/hp.owl",' \
-                         '\n\t\t\t"version": "' + self.hpo_obo_version + '",' \
-                         '\n\t\t\t"iriPrefix": "http://purl.obolibrary.org/obo/HP_"' \
-                         '\n\t\t}]' \
-                         '\n\t}'
-
-        # Writes closing bracket.
-        output_string += '\n}'
-
-        return output_string
+        # Serializes dict to json and returns string.
+        return dumps(json_dict, indent='\t')
 
 
 class GeneConverter(Converter):
