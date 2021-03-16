@@ -1,6 +1,5 @@
 #!/user/bin/env python3
 
-from argparse import ArgumentParser
 from argparse import RawTextHelpFormatter
 from biobesu.helper.generic import retrieve_entry_point
 from biobesu.helper.argument_parser import BiobesuParser
