@@ -66,7 +66,7 @@ class PhenotypeConverter(Converter):
         self.id_by_names = {}
 
         # Stores hpo obo relevant information.
-        self.hpo_obo_version = ""
+        self.hpo_obo_version = ''
 
         # Processes hpo obo file.
         self.read_hpo_obo(hpo_obo)
@@ -205,7 +205,7 @@ class GeneConverter(Converter):
     file_name = 'gene_ids_symbols.tsv'
 
     # Expected header format.
-    expected_file_header = "NCBI Gene ID\tApproved symbol"
+    expected_file_header = 'NCBI Gene ID\tApproved symbol'
 
     def __init__(self, gene_file_dir):
         # The file location that needs to be loaded.
@@ -247,7 +247,7 @@ class GeneConverter(Converter):
 
             # Processes items.
             if counter > 0:
-                line = line.rstrip().split("\t")
+                line = line.rstrip().split('\t')
 
                 # Ensures all items are of equal length after splitting.
                 while len(line) < 2:
@@ -260,7 +260,7 @@ class GeneConverter(Converter):
                 # Adds gene to dict.
                 if gene_id != '':
                     if self.id_by_symbol.get(gene_symbol) is not None:
-                        raise Exception("The symbol {} was already assigned to {}".format(gene_symbol, gene_id))
+                        raise FileContentError(f'The symbol {gene_symbol} was already assigned to {gene_id}')
                     self.id_by_symbol[gene_symbol] = gene_id
                     self.symbol_by_id[gene_id] = gene_symbol
 

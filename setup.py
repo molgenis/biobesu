@@ -2,21 +2,21 @@
 
 from setuptools import setup, find_namespace_packages
 
-with open("README.md", "r", encoding="utf-8") as fh:
+with open('README.md', 'r', encoding='utf-8') as fh:
     long_description = fh.read()
 
 setup(
-    name="biobesu",
+    name='biobesu',
     keywords=['benchmark', 'bioinformatics'],
     packages=find_namespace_packages(),
-    version="0.1.0-SNAPSHOT",
+    version='0.1.0-SNAPSHOT',
     license='GNU Lesser General Public License v3 (LGPLv3)',
-    author="MOLGENIS development team",
-    author_email="molgenis@gmail.com",
-    description="Bioinformatics Benchmark Suite",
+    author='MOLGENIS development team',
+    author_email='molgenis@gmail.com',
+    description='Bioinformatics Benchmark Suite',
     long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/molgenis/biobesu",
+    long_description_content_type='text/markdown',
+    url='https://github.com/molgenis/biobesu',
     # download_url = '',
     python_requires='>=3.8',
     install_requires=[
@@ -39,8 +39,8 @@ setup(
         ],
     },
     classifiers=[
-        "Programming Language :: Python :: 3",
-        "Operating System :: OS Independent",
-        "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)"
+        'Programming Language :: Python :: 3',
+        'Operating System :: OS Independent',
+        'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)'
     ]
 )

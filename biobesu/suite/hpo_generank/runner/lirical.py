@@ -14,7 +14,7 @@ from biobesu.helper.argument_parser import BiobesuParser
 
 # Used only for docstring
 from argparse import ArgumentParser
-from _io import TextIOWrapper
+from typing import TextIO
 
 
 def main(parser):
@@ -29,7 +29,7 @@ def main(parser):
         # Convert output to genes.
         __convert_lirical_extractions(args, lirical_gene_alias_file, lirical_omims_file)
     except FileExistsError as e:
-        print("\nAn output file/directory already exists: " + e.filename + "\nExiting...")
+        print(f'\nAn output file/directory already exists: {e.filename}\nExiting...')
 
 
 def __parse_command_line(parser):
@@ -43,26 +43,26 @@ def __parse_command_line(parser):
     """
 
     # Adds runner-specific command line.
-    parser.add_argument("--jar", required=True, help="location of LIRICAL .jar file")
-    parser.add_argument("--hpo", required=True, help="hpo.obo file")
-    parser.add_argument("--input", required=True, help="input tsv benchmark file")
-    parser.add_argument("--output", required=True, help="directory to write output to")
-    parser.add_argument("--lirical_data", required=True, help="directory containing data needed by lirical")
-    parser.add_argument("--runner_data", required=True, help="directory that can used to store needed data")
+    parser.add_argument('--jar', required=True, help='location of LIRICAL .jar file')
+    parser.add_argument('--hpo', required=True, help='hpo.obo file')
+    parser.add_argument('--input', required=True, help='input tsv benchmark file')
+    parser.add_argument('--output', required=True, help='directory to write output to')
+    parser.add_argument('--lirical_data', required=True, help='directory containing data needed by lirical')
+    parser.add_argument('--runner_data', required=True, help='directory that can used to store needed data')
 
     # Processes command line.
     try:
         args = parser.parse_args()
-        validate.file(args.input, ".tsv")
-        validate.file(args.hpo, ".obo")
-        validate.file(args.jar, ".jar")
+        validate.file(args.input, '.tsv')
+        validate.file(args.hpo, '.obo')
+        validate.file(args.jar, '.jar')
         args.output = validate.directory(args.output)
 
         args.lirical_data = validate.directory(args.lirical_data)
-        validate.file(args.lirical_data + "Homo_sapiens_gene_info.gz")
-        validate.file(args.lirical_data + "hp.obo")
-        validate.file(args.lirical_data + "mim2gene_medgen")
-        validate.file(args.lirical_data + "phenotype.hpoa")
+        validate.file(args.lirical_data + 'Homo_sapiens_gene_info.gz')
+        validate.file(args.lirical_data + 'hp.obo')
+        validate.file(args.lirical_data + 'mim2gene_medgen')
+        validate.file(args.lirical_data + 'phenotype.hpoa')
     except OSError as e:
         parser.error(e)
 
@@ -78,7 +78,7 @@ def __generate_phenopacket_files(args):
     :rtype: str
     """
 
-    phenopackets_dir = create_dir(args.output + "phenopackets/")
+    phenopackets_dir = create_dir(args.output + 'phenopackets/')
     converter = PhenotypeConverter(args.hpo)
 
     # Digests the benchmark cases.
@@ -113,14 +113,14 @@ def __run_lirical(args, phenopackets_dir):
     :rtype: str
     """
 
-    lirical_output_dir = create_dir(args.output + "lirical_output/")
+    lirical_output_dir = create_dir(args.output + 'lirical_output/')
 
     # Run tool for each input file.
     for file in listdir(phenopackets_dir):
         file_path = phenopackets_dir + file
-        file_id = file.rstrip(".json").split('/')[-1]
-        call("java -jar " + args.jar + " phenopacket -p " + file_path + " -o " + lirical_output_dir + " -x " + file_id +
-             " -d " + args.lirical_data + " --tsv", shell=True)
+        file_id = file.rstrip('.json').split('/')[-1]
+        call(f'java -jar {args.jar} phenopacket -p {file_path} -o {lirical_output_dir} -x {file_id} '
+             f'-d {args.lirical_data} --tsv', shell=True)
 
     return lirical_output_dir
 
@@ -136,22 +136,22 @@ def __extract_from_lirical_output(args, lirical_output_dir):
     :rtype: tuple[str,str]
     """
 
-    extract_dir = create_dir(args.output + "lirical_extraction/")
-    lirical_gene_alias_file = extract_dir + "lirical_gene_alias.tsv"
-    lirical_omims_file = extract_dir + "lirical_omim.tsv"
+    extract_dir = create_dir(args.output + 'lirical_extraction/')
+    lirical_gene_alias_file = extract_dir + 'lirical_gene_alias.tsv'
+    lirical_omims_file = extract_dir + 'lirical_omim.tsv'
 
     # Gene alias file writer.
     with open(lirical_gene_alias_file, 'x') as alias_writer:  # Requires creating a new file.
-        alias_writer.write("id\tgene_aliases")
+        alias_writer.write('id\tgene_aliases')
 
         # Omim file writer.
         with open(lirical_omims_file, 'x') as omim_writer:  # Requires creating a new file.
-            omim_writer.write("id\tomims")
+            omim_writer.write('id\tomims')
 
             # Process input files.
             for file in listdir(lirical_output_dir):
                 # Generate ID column.
-                id_column = "\n{}\t".format(file.rstrip(".tsv").split('/')[-1])
+                id_column = '\n{}\t'.format(file.rstrip('.tsv').split('/')[-1])
                 alias_writer.write(id_column)
                 omim_writer.write(id_column)
 
@@ -169,7 +169,7 @@ def __extract_fields_from_lirical_data(file_data):
     Extracts the gene aliases & omim codes from an opened file.
 
     :param file_data: the opened file (or list of strings representing the file)
-    :type file_data: TextIOWrapper | list[str]
+    :type file_data: TextIO | list[str]
     :return: the found gene aliases & omim codes
     :rtype: tuple[list[str],list[str]]
     """
@@ -208,29 +208,29 @@ def __convert_lirical_extractions(args, lirical_gene_alias_file, lirical_omims_f
     :type lirical_omims_file: str
     """
 
-    conversion_dir = create_dir(args.output + "lirical_conversion/")
-    converted_gene_alias_file = conversion_dir + "lirical_gene_alias_converted.tsv"
-    converted_omim_intermediate = conversion_dir + "lirical_omim_gene_id.tsv"
-    converted_omim_file = conversion_dir + "lirical_omim_converted.tsv"
-    final_header = "id\tgene_symbol\n"
+    conversion_dir = create_dir(args.output + 'lirical_conversion/')
+    converted_gene_alias_file = conversion_dir + 'lirical_gene_alias_converted.tsv'
+    converted_omim_intermediate = conversion_dir + 'lirical_omim_gene_id.tsv'
+    converted_omim_file = conversion_dir + 'lirical_omim_converted.tsv'
+    final_header = 'id\tgene_symbol\n'
 
     # Route 1 to gene symbols.
-    print("Retrieve genes through gene aliases...")
-    missing = __convert_lirical_output_digest(LiricalGeneAliasConverter(args.lirical_data + "Homo_sapiens_gene_info.gz")
+    print('Retrieve genes through gene aliases...')
+    missing = __convert_lirical_output_digest(LiricalGeneAliasConverter(args.lirical_data + 'Homo_sapiens_gene_info.gz')
                                               .alias_to_gene_symbol, lirical_gene_alias_file, converted_gene_alias_file,
                                               final_header)
-    eprint("Failed to convert these gene aliases to gene symbols: {}\n".format(missing))
+    eprint('Failed to convert these gene aliases to gene symbols: {}\n'.format(missing))
 
     # Route 2 to gene symbols.
-    print("Retrieve genes through OMIM...")
-    missing = __convert_lirical_output_digest(LiricalOmimConverter(args.lirical_data + "mim2gene_medgen")
+    print('Retrieve genes through OMIM...')
+    missing = __convert_lirical_output_digest(LiricalOmimConverter(args.lirical_data + 'mim2gene_medgen')
                                               .omim_to_gene_id, lirical_omims_file, converted_omim_intermediate,
-                                              "id\tgene_id\n")
-    eprint("Failed to convert these OMIMs to gene IDs: {}\n".format(missing))
+                                              'id\tgene_id\n')
+    eprint('Failed to convert these OMIMs to gene IDs: {}\n'.format(missing))
 
     missing = __convert_lirical_output_digest(GeneConverter(args.runner_data).id_to_symbol, converted_omim_intermediate,
                                               converted_omim_file, final_header)
-    eprint("Failed to convert these gene IDs to gene symbols: {}\n".format(missing))
+    eprint('Failed to convert these gene IDs to gene symbols: {}\n'.format(missing))
 
 
 def __convert_lirical_output_digest(convert_method, input_file, output_file, output_file_header):

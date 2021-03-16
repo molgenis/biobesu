@@ -34,32 +34,32 @@ is_a: HP:0025487 ! Abnormality of bladder morphology
 
 """
 
-    @patch("builtins.open", new_callable=mock_open, read_data=hpo_obo)
+    @patch('builtins.open', new_callable=mock_open, read_data=hpo_obo)
     def test_id_to_symbol(self, mock_open):
-        converter = converters.PhenotypeConverter("/path/to/file")
+        converter = converters.PhenotypeConverter('/path/to/file')
 
-        hpo_ids = ["HP:0000008", "HP:0000015"]
-        expected_output = (["Abnormality of female internal genitalia", "Bladder diverticulum"], set())
+        hpo_ids = ['HP:0000008', 'HP:0000015']
+        expected_output = (['Abnormality of female internal genitalia', 'Bladder diverticulum'], set())
         actual_output = converter.id_to_name(hpo_ids)
 
         assert actual_output == expected_output
 
-    @patch("builtins.open", new_callable=mock_open, read_data=hpo_obo)
+    @patch('builtins.open', new_callable=mock_open, read_data=hpo_obo)
     def test_symbol_to_id(self, mock_open):
-        converter = converters.PhenotypeConverter("/path/to/file")
+        converter = converters.PhenotypeConverter('/path/to/file')
 
-        hpo_names = ["Abnormality of female internal genitalia", "Bladder diverticulum"]
-        expected_output = (["HP:0000008", "HP:0000015"], set())
+        hpo_names = ['Abnormality of female internal genitalia', 'Bladder diverticulum']
+        expected_output = (['HP:0000008', 'HP:0000015'], set())
         actual_output = converter.name_to_id(hpo_names)
 
         assert actual_output == expected_output
 
-    @patch("builtins.open", new_callable=mock_open, read_data=hpo_obo)
-    def test_id_to_phenopackets(selfself, mock_open):
-        converter = converters.PhenotypeConverter("/path/to/file")
+    @patch('builtins.open', new_callable=mock_open, read_data=hpo_obo)
+    def test_id_to_phenopackets(self, mock_open):
+        converter = converters.PhenotypeConverter('/path/to/file')
 
-        phenopacket_id = "01234"
-        hpo_ids = ["HP:0000008", "HP:0000015"]
+        phenopacket_id = '01234'
+        hpo_ids = ['HP:0000008', 'HP:0000015']
 
         # Based on https://phenopackets-schema.readthedocs.io/en/v1.1/phenopacket.html
         # Created string is empty to evade test failing due to different timestamps.
@@ -114,9 +114,9 @@ class TestGeneConverter:
 11	NATP
 """
 
-    @patch("builtins.open", new_callable=mock_open, read_data=gene_info_file)
+    @patch('builtins.open', new_callable=mock_open, read_data=gene_info_file)
     def test_id_to_symbol_single(self, mock_open):
-        converter = converters.GeneConverter("path/to/file")
+        converter = converters.GeneConverter('path/to/file')
 
         input_data = '9'
         expected_output = 'NAT1'
@@ -124,9 +124,9 @@ class TestGeneConverter:
 
         assert actual_output == expected_output
 
-    @patch("builtins.open", new_callable=mock_open, read_data=gene_info_file)
+    @patch('builtins.open', new_callable=mock_open, read_data=gene_info_file)
     def test_id_to_symbol_list(self, mock_open):
-        converter = converters.GeneConverter("/path/to/file")
+        converter = converters.GeneConverter('/path/to/file')
 
         input_data = ['10', '3']
         expected_output = (['NAT2', 'A2MP1'], set())
@@ -134,19 +134,19 @@ class TestGeneConverter:
 
         assert actual_output == expected_output
 
-    @patch("builtins.open", new_callable=mock_open, read_data=gene_info_file)
+    @patch('builtins.open', new_callable=mock_open, read_data=gene_info_file)
     def test_id_to_symbol_list_with_missing(self, mock_open):
-        converter = converters.GeneConverter("/path/to/file")
+        converter = converters.GeneConverter('/path/to/file')
 
         input_data = ['10', '3', '14']
-        expected_output = (['NAT2', 'A2MP1'], set(('14',)))
+        expected_output = (['NAT2', 'A2MP1'], {'14'})
         actual_output = converter.id_to_symbol(input_data)
 
         assert actual_output == expected_output
 
-    @patch("builtins.open", new_callable=mock_open, read_data=gene_info_file)
+    @patch('builtins.open', new_callable=mock_open, read_data=gene_info_file)
     def test_symbol_to_id(self, mock_open):
-        converter = converters.GeneConverter("path/to/file")
+        converter = converters.GeneConverter('path/to/file')
 
         input_data = 'NAT1'
         expected_output = '9'
