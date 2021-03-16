@@ -151,7 +151,8 @@ def __extract_from_lirical_output(args, lirical_output_dir):
             # Process input files.
             for file in listdir(lirical_output_dir):
                 # Generate ID column.
-                id_column = '\n{}\t'.format(file.rstrip('.tsv').split('/')[-1])
+                id_value = file.rstrip('.tsv').split('/')[-1]
+                id_column = f'\n{id_value}\t'
                 alias_writer.write(id_column)
                 omim_writer.write(id_column)
 
@@ -219,18 +220,18 @@ def __convert_lirical_extractions(args, lirical_gene_alias_file, lirical_omims_f
     missing = __convert_lirical_output_digest(LiricalGeneAliasConverter(args.lirical_data + 'Homo_sapiens_gene_info.gz')
                                               .alias_to_gene_symbol, lirical_gene_alias_file, converted_gene_alias_file,
                                               final_header)
-    eprint('Failed to convert these gene aliases to gene symbols: {}\n'.format(missing))
+    eprint(f'Failed to convert these gene aliases to gene symbols: {missing}\n')
 
     # Route 2 to gene symbols.
     print('Retrieve genes through OMIM...')
     missing = __convert_lirical_output_digest(LiricalOmimConverter(args.lirical_data + 'mim2gene_medgen')
                                               .omim_to_gene_id, lirical_omims_file, converted_omim_intermediate,
                                               'id\tgene_id\n')
-    eprint('Failed to convert these OMIMs to gene IDs: {}\n'.format(missing))
+    eprint(f'Failed to convert these OMIMs to gene IDs: {missing}\n')
 
     missing = __convert_lirical_output_digest(GeneConverter(args.runner_data).id_to_symbol, converted_omim_intermediate,
                                               converted_omim_file, final_header)
-    eprint('Failed to convert these gene IDs to gene symbols: {}\n'.format(missing))
+    eprint(f'Failed to convert these gene IDs to gene symbols: {missing}\n')
 
 
 def __convert_lirical_output_digest(convert_method, input_file, output_file, output_file_header):

@@ -10,7 +10,7 @@ class BiobesuParser(ArgumentParser):
     """
 
     def error(self, message):
-        sys.stderr.write('error: %s\n\n' % message)
+        sys.stderr.write(f'error: {message}\n\n')
         self.print_help()
         print()
         sys.exit(2)
