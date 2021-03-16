@@ -4,6 +4,7 @@ from datetime import datetime
 from biobesu.helper import validate
 from json import dumps
 import requests
+from biobesu.helper.error import FileContentError
 
 
 class Converter:
@@ -241,8 +242,8 @@ class GeneConverter(Converter):
         for counter, line in enumerate(open(self.gene_file)):
             # Validates if all expected columns are present and in expected order.
             if counter == 0 and line.rstrip() != self.expected_file_header:
-                raise Exception("Unexpected gene info file header.\nExpected: {0}\nActual: {1}"
-                                .format(self.expected_file_header, line))
+                raise FileContentError('Unexpected gene info file header.\nExpected: {0}\nActual: {1}'
+                                       .format(self.expected_file_header, line))
 
             # Processes items.
             if counter > 0:
