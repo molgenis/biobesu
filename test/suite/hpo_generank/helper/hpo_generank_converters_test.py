@@ -19,9 +19,11 @@ class TestLiricalGeneAliasConverter:
     compress.write(gene_info_string)
     compress.close()
 
+    file_path_placeholder = ''
+
     @patch("builtins.open", new_callable=mock_open, read_data=gene_info.getvalue())
     def test_alias_to_gene_symbol(self, mock_open):
-        converter = converters.LiricalGeneAliasConverter("/path/to/file")
+        converter = converters.LiricalGeneAliasConverter(self.file_path_placeholder)
 
         aliases = ["GAB", "CPAMD5"]
         expected_output = (["A1BG", "A2M"], set())
@@ -37,9 +39,11 @@ class TestLiricalOmimConverter:
 100300	57514	phenotype	 GeneMap	C4551482	-
 """
 
+    file_path_placeholder = ''
+
     @patch("builtins.open", new_callable=mock_open, read_data=mim2_gene)
     def test_alias_to_gene_symbol(self, mock_open):
-        converter = converters.LiricalOmimConverter("/path/to/file")
+        converter = converters.LiricalOmimConverter(self.file_path_placeholder)
 
         omims = ["100300", "100100"]
         expected_output = (["57514", "1131"], set())

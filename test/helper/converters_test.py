@@ -33,10 +33,11 @@ xref: UMLS:C0156273
 is_a: HP:0025487 ! Abnormality of bladder morphology
 
 """
+    file_path_placeholder = ''
 
     @patch('builtins.open', new_callable=mock_open, read_data=hpo_obo)
     def test_id_to_symbol(self, mock_open):
-        converter = converters.PhenotypeConverter('/path/to/file')
+        converter = converters.PhenotypeConverter(self.file_path_placeholder)
 
         hpo_ids = ['HP:0000008', 'HP:0000015']
         expected_output = (['Abnormality of female internal genitalia', 'Bladder diverticulum'], set())
@@ -46,7 +47,7 @@ is_a: HP:0025487 ! Abnormality of bladder morphology
 
     @patch('builtins.open', new_callable=mock_open, read_data=hpo_obo)
     def test_symbol_to_id(self, mock_open):
-        converter = converters.PhenotypeConverter('/path/to/file')
+        converter = converters.PhenotypeConverter(self.file_path_placeholder)
 
         hpo_names = ['Abnormality of female internal genitalia', 'Bladder diverticulum']
         expected_output = (['HP:0000008', 'HP:0000015'], set())
@@ -56,7 +57,7 @@ is_a: HP:0025487 ! Abnormality of bladder morphology
 
     @patch('builtins.open', new_callable=mock_open, read_data=hpo_obo)
     def test_id_to_phenopackets(self, mock_open):
-        converter = converters.PhenotypeConverter('/path/to/file')
+        converter = converters.PhenotypeConverter(self.file_path_placeholder)
 
         phenopacket_id = '01234'
         hpo_ids = ['HP:0000008', 'HP:0000015']
@@ -114,9 +115,11 @@ class TestGeneConverter:
 11	NATP
 """
 
+    dir_path_placeholder = ''
+
     @patch('builtins.open', new_callable=mock_open, read_data=gene_info_file)
     def test_id_to_symbol_single(self, mock_open):
-        converter = converters.GeneConverter('path/to/dir')
+        converter = converters.GeneConverter(self.dir_path_placeholder)
 
         input_data = '9'
         expected_output = 'NAT1'
@@ -126,7 +129,7 @@ class TestGeneConverter:
 
     @patch('builtins.open', new_callable=mock_open, read_data=gene_info_file)
     def test_id_to_symbol_list(self, mock_open):
-        converter = converters.GeneConverter('/path/to/dir')
+        converter = converters.GeneConverter(self.dir_path_placeholder)
 
         input_data = ['10', '3']
         expected_output = (['NAT2', 'A2MP1'], set())
@@ -136,7 +139,7 @@ class TestGeneConverter:
 
     @patch('builtins.open', new_callable=mock_open, read_data=gene_info_file)
     def test_id_to_symbol_list_with_missing(self, mock_open):
-        converter = converters.GeneConverter('/path/to/dir')
+        converter = converters.GeneConverter(self.dir_path_placeholder)
 
         input_data = ['10', '3', '14']
         expected_output = (['NAT2', 'A2MP1'], {'14'})
@@ -146,7 +149,7 @@ class TestGeneConverter:
 
     @patch('builtins.open', new_callable=mock_open, read_data=gene_info_file)
     def test_symbol_to_id(self, mock_open):
-        converter = converters.GeneConverter('path/to/dir')
+        converter = converters.GeneConverter(self.dir_path_placeholder)
 
         input_data = 'NAT1'
         expected_output = '9'
