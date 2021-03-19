@@ -157,7 +157,7 @@ class PhenotypeConverter(Converter):
         """
 
         # Create json dict with id.
-        json_dict = {"id": phenopacket_id}
+        json_dict = {'id': phenopacket_id}
 
         # Add phenotype information to json dict.
         phenotypic_features = []

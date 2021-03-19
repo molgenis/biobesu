@@ -25,8 +25,8 @@ class TestLiricalGeneAliasConverter:
     def test_alias_to_gene_symbol(self, mock_open):
         converter = converters.LiricalGeneAliasConverter(self.file_path_placeholder)
 
-        aliases = ["GAB", "CPAMD5"]
-        expected_output = (["A1BG", "A2M"], set())
+        aliases = ['GAB', 'CPAMD5']
+        expected_output = (['A1BG', 'A2M'], set())
         actual_output = converter.alias_to_gene_symbol(aliases)
 
         assert actual_output == expected_output
@@ -41,12 +41,12 @@ class TestLiricalOmimConverter:
 
     file_path_placeholder = ''
 
-    @patch("builtins.open", new_callable=mock_open, read_data=mim2_gene)
+    @patch('builtins.open', new_callable=mock_open, read_data=mim2_gene)
     def test_alias_to_gene_symbol(self, mock_open):
         converter = converters.LiricalOmimConverter(self.file_path_placeholder)
 
-        omims = ["100300", "100100"]
-        expected_output = (["57514", "1131"], set())
+        omims = ['100300', '100100']
+        expected_output = (['57514', '1131'], set())
         actual_output = converter.omim_to_gene_id(omims)
 
         assert actual_output == expected_output

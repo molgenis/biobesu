@@ -17,7 +17,7 @@ def program(cmd):
     """
 
     if not which(cmd):
-        raise OSError("Error: " + cmd + " is not available on this system.")
+        raise OSError('Error: ' + cmd + ' is not available on this system.')
 
 
 def file(file_string, expected_extension='', executable=False):
