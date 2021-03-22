@@ -11,3 +11,6 @@ biobesu.egg-info/
 # Python
 *.pyc
 __pychache__/
+
+# Tool files
+lirical.log
