@@ -3,8 +3,11 @@
 from os import listdir
 
 
-def list_to_vibe_arguments(string, argument):
-    return f'{argument} ' + f' {argument} '.join(string)
+def list_to_vibe_arguments(argument_list, argument):
+    if len(argument_list) > 0:
+        return f'{argument} ' + f' {argument} '.join(argument_list)
+    else:
+        return ''
 
 
 def merge_vibe_simple_output_files(vibe_dir, out_file):
