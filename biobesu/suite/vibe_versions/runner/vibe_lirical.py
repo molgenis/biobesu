@@ -169,7 +169,3 @@ def __run_vibe(args, lirical_omims_file):
              f'-o {output_file} -l', shell=True)
 
     return vibe_output_dir
-
-
-def list_to_vibe_arguments(string, argument):
-    return f'{argument} ' + f' {argument} '.join(string)

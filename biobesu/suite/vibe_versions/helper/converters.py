@@ -4,7 +4,9 @@ from os import listdir
 
 
 def list_to_vibe_arguments(argument_list, argument):
-    if len(argument_list) > 0:
+    # Checks whether any elements are given, and if so, whether the first one isn't an empty String.
+    # In case multiple elements are given, it is assumed it's not a list containing empty Strings.
+    if len(argument_list) > 0 and len(argument_list[0]) > 0:
         return f'{argument} ' + f' {argument} '.join(argument_list)
     else:
         return ''
