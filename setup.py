@@ -39,7 +39,8 @@ setup(
             'lirical = biobesu.suite.hpo_generank.runner.lirical:main'
         ],
         'biobesu_vibe_versions': [
-            'lirical = biobesu.suite.vibe_versions.runner.vibe_lirical:main'
+            'lirical = biobesu.suite.vibe_versions.runner.vibe_lirical:main',
+            '5.0 = biobesu.suite.vibe_versions.runner.vibe_5_0:main'
         ],
     },
     classifiers=[
