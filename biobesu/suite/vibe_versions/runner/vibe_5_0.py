@@ -28,7 +28,7 @@ class VibeRunner5_0:
         self.__parse_command_line(parser)
 
         # Defines arguments based on parser.
-        self.vibe_output_dir = create_dir(self.args.output + 'vibe_output/')
+        self.vibe_output_dir = create_dir(self.args.output + 'vibe_output/', exist_allowed=True)
 
     def run(self):
         """
