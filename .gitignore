@@ -17,4 +17,4 @@ lirical.log
 
 # All files except actual R scripts.
 **/r_scripts/*
-!**/r_scripts/*.Rmd
+!**/r_scripts/*.R*
