@@ -17,7 +17,8 @@ def merge_vibe_simple_output_files(vibe_dir, out_file):
         # Write header.
         file_writer.write("id\tsuggested_genes\n")
         for vibe_out_file in listdir(vibe_dir):
-            with open(vibe_dir + vibe_out_file) as file_reader:
-                file_name = vibe_out_file.split('.')[0]
-                genes = file_reader.readline()  # File should contain single comma separated line.
-                file_writer.write(f'{file_name}\t{genes}\n')
+            if not vibe_out_file.startswith('.'):  # Ignore hidden files such as .DS_Store.
+                with open(vibe_dir + vibe_out_file) as file_reader:
+                    file_name = vibe_out_file.split('.')[0]
+                    genes = file_reader.readline()  # File should contain single comma separated line.
+                    file_writer.write(f'{file_name}\t{genes}\n')
