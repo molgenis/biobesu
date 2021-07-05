@@ -253,7 +253,11 @@ totalResults <- totalResults[,-1]
 #names(toolOutputSplitted) <- names(resultData)
 
 # Tool colors
-toolColors <- carto_pal(length(resultData), "Safe")
+if(length(resultData) > 2) {
+  toolColors <- carto_pal(length(resultData), "Safe")
+} else {
+  toolColors <- carto_pal(3, "Safe")[1:length(resultData)]
+}
 names(toolColors) <- names(resultData)
 
 ##############################
