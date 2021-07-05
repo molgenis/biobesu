@@ -27,7 +27,6 @@
 ##################
 
 # Input arguments.
-# Change the arguments here if adding/remove benchmarks from the plots!
 library(optparse)
 options = list(
   make_option(c("-b", "--benchmark"), help="path to benchmark .tsv file", default="./benchmark_data.tsv"),
@@ -244,13 +243,13 @@ positionResults <- positionResults[,-1]
 totalResults <- totalResults[,-1]
 
 # Generate splitted genes for all tools: [[version]][[id]]@genes[[1]]
-#setClass("suggestedGenes", representation(genes="vector"))
-#toolOutputSplitted <- sapply(resultData, function(versionData) {
-#  sapply(rownames(versionData), function(id, versionData) {
-#    new("suggestedGenes", genes=strsplit(versionData[id,"suggested_genes"], ","))
-#  }, versionData=versionData)
-#}, simplify=FALSE)
-#names(toolOutputSplitted) <- names(resultData)
+setClass("suggestedGenes", representation(genes="vector"))
+toolOutputSplitted <- sapply(resultData, function(versionData) {
+  sapply(rownames(versionData), function(id, versionData) {
+    new("suggestedGenes", genes=strsplit(versionData[id,"suggested_genes"], ","))
+  }, versionData=versionData)
+}, simplify=FALSE)
+names(toolOutputSplitted) <- names(resultData)
 
 # Tool colors
 if(length(resultData) > 2) {
