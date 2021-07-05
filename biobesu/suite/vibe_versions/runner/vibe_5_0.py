@@ -15,7 +15,8 @@ from argparse import ArgumentParser
 class VibeRunner5_0:
     JAR_FILENAME = 'vibe-with-dependencies-5.0.3.jar'
     HDT_FILENAME = 'vibe-5.0.0.hdt'
-    HPO_FILENAME = 'hp.owl'
+    HPO_FILENAME = '.owl'  # Given owl file does not matter as it is not used.
+    FINAL_OUTPUT_FILE = 'vibe_5.0.3.tsv'
 
     def __init__(self, parser):
         # Parse command line.
@@ -33,7 +34,7 @@ class VibeRunner5_0:
             self.__run_vibe()
 
             # Convert vibe output for visualization.
-            merge_vibe_simple_output_files(self.vibe_output_dir, f'{self.args.output}vibe.tsv')
+            merge_vibe_simple_output_files(self.vibe_output_dir, f'{self.args.output}{self.FINAL_OUTPUT_FILE}')
         except FileExistsError as e:
             print(f'\nAn output file/directory already exists: {e.filename}\nExiting...')
 

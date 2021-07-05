@@ -30,7 +30,7 @@ def main(parser):
         vibe_output_dir = __run_vibe(args, lirical_omims_file)
 
         # Convert vibe output for visualization.
-        merge_vibe_simple_output_files(vibe_output_dir, args.output + 'vibe.tsv')
+        merge_vibe_simple_output_files(vibe_output_dir, args.output + 'vibe_lirical.tsv')
     except FileExistsError as e:
         print(f'\nAn output file/directory already exists: {e.filename}\nExiting...')
 
