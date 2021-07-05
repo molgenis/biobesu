@@ -18,7 +18,7 @@ def program(cmd):
     """
 
     if not which(cmd):
-        raise OSError('Error: ' + cmd + ' is not available on this system.')
+        raise OSError(f'Error: {cmd} is not available on this system.')
 
 
 def file(file_string, expected_extension='', executable=False):
@@ -31,13 +31,13 @@ def file(file_string, expected_extension='', executable=False):
 
     file_name = file_string.split('/')[-1]
     if not isfile(file_string):
-        raise OSError('"' + file_name + '" is not a file')
+        raise OSError(f'"{file_name}" is not a file')
     if expected_extension != '' and not file_string.endswith(expected_extension):
-        raise OSError('"' + file_name + '" is not a ' + expected_extension + 'file')
+        raise OSError(f'"{file_name}" is not a {expected_extension} file')
     if not access(file_string, R_OK):
-        raise OSError('"' + file_name + '" is not a readable file')
+        raise OSError(f'"{file_name}" is not a readable file')
     if executable and not access(file_string, X_OK):
-        raise OSError('"' + file_name + '" is not an executable file')
+        raise OSError(f'"{file_name}" is not an executable file')
 
 
 def directory(dir_string, writable=True, create_if_not_exist=False):
@@ -57,11 +57,11 @@ def directory(dir_string, writable=True, create_if_not_exist=False):
         create_dir(dir_string, exist_allowed=True)
 
     if not isdir(dir_string):
-        raise OSError('"' + dir_name + '" is not a directory')
+        raise OSError(f'"{dir_name}" is not a directory')
     if not access(dir_string, R_OK):
-        raise OSError('"' + dir_name + '" is not a readable directory')
+        raise OSError(f'"{dir_name}" is not a readable directory')
     if writable and not access(dir_string, W_OK):
-        raise OSError('"' + dir_name + '" is not a writable directory')
+        raise OSError(f'"{dir_name}" is not a writable directory')
 
     # Return coherent dir string.
     return dir_string
