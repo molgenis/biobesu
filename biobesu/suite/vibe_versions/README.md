@@ -9,7 +9,8 @@ id  gene_id    hpo_ids
 
 IMPORTANT: The `id` field must be unique!
 
-## VIBE v5.0
+## Run benchmarks
+### VIBE v5.0
 
 1. Download/unpack VIBE + resources:
     - [vibe-with-dependencies-5.0.3.jar](https://github.com/molgenis/vibe/releases/download/vibe-5.0.3/vibe-with-dependencies-5.0.3.jar)
@@ -22,7 +23,7 @@ IMPORTANT: The `id` field must be unique!
    --input benchmark_data.tsv --output vibe_5_0_output_dir
    ```
 
-## VIBE v5.1
+### VIBE v5.1
 
 1. Download/unpack VIBE + resources:
     - [vibe-with-dependencies-5.1.0.jar](https://github.com/molgenis/vibe/releases/download/vibe-5.1.0/vibe-with-dependencies-5.1.0.jar)
@@ -34,3 +35,21 @@ IMPORTANT: The `id` field must be unique!
    biobesu vibe_versions 5.1 --jar vibe-with-dependencies-5.1.0.jar --hdt vibe-5.1.0-hdt/vibe-5.1.0.hdt --hpo hp.owl \
    --input benchmark_data.tsv --output vibe_5_1_output_dir
    ```
+
+## Generate plots
+There are several ways to generate the plots:
+- Opening the R script in RStudio.  
+  Requires either:
+    - Storing the benchmark file inside the `r_scripts` directory and the run output files inside a subdirectory called `results`.
+    - Adjusting the `default` paths found in the `Config` section.
+- Running the script through the command line.  
+  Requires either:
+  - Giving the correct paths through the command line arguments (after copying all output files to a single directory).
+  - Storing the benchmark file inside the `r_scripts` directory and the run output files inside a subdirectory called `results` (the default paths).
+
+Example flow of running this script:
+1. Copy all output files of each ran benchmark to a single (new) directory.
+2. Run the R script:
+    ```bash
+    Rscript generate_plots.R -b benchmark_data.tsv -r benchmark_results/ -o ./
+    ```
