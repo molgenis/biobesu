@@ -60,7 +60,7 @@ def __parse_command_line(parser):
 
         # General validation.
         validate.file(args.input, '.tsv')
-        args.output = validate.directory(args.output)
+        args.output = validate.directory(args.output, create_if_not_exist=True)
         validate.file(args.hpo, '.obo')
 
         # Lirical validation.
