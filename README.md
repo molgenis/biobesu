@@ -64,6 +64,9 @@ pytest test/
 
 For scripts that can be run independently, you can set up run configurations to easily test these scripts.
 
+Be sure to use pytest when running the tests using Intellij IDEA.
+You can change the default test interpreter in `Preferences -> Tools -> Python Integrated Tools -> Default test runner `.
+
 ### Structure
 
 ```
@@ -78,3 +81,20 @@ suite/ # Benchmark suites
         |- runner/ # Scripts runnable through suite entry point
             |- <name>.py
 ```
+
+When updating the `setup.py` with a new suite, be sure to use the naming convention: `biobesu_<dirname_suite>`.
+You can deviate within a suite in regards to the entrypoint names, though it is suggested to keep them identical (or at least similar).
+
+**setup.py example**
+```
+'biobesu_suites': [
+    'suit_name = biobesu.suite.suit_name.cli:main',
+],
+'biobesu_suit_name': [
+    'runner_name = biobesu.suite.suit_name.runner.runner_name:main',
+    'another = biobesu.suite.suit_name.runner.another_runner:main'
+],
+```
+
+For test python scripts, please prepend `<suit_name>-` before the name if it's a suite-specific test file.
+This so that no overlapping test script filenames can occur.
