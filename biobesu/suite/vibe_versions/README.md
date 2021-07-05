@@ -7,12 +7,19 @@ id  gene_id    hpo_ids
 02  29974    HP:0000888
 ```
 
+IMPORTANT: The `id` field must be unique!
+
 ## VIBE v5.0
 
-1. Run VIBE:
+1. Download/unpack VIBE + resources:
+    - [vibe-with-dependencies-5.0.3.jar](https://github.com/molgenis/vibe/releases/download/vibe-5.0.3/vibe-with-dependencies-5.0.3.jar)
+    - [vibe-5.0.0-hdt.tar.gz](https://downloads.molgeniscloud.org/downloads/vibe/vibe-5.0.0-hdt.tar.gz)
+    - [hp.owl](http://purl.obolibrary.org/obo/hp/releases/2018-03-08/hp.owl)
 
+2. Run VIBE:
    ```bash
-   biobesu vibe_versions 5.0 --input benchmark_data.tsv --output output_dir --data vibe_data_dir/ --download
+   biobesu vibe_versions 5.0 --jar vibe-with-dependencies-5.0.3.jar --hdt vibe-5.0.0-hdt/vibe-5.0.0.hdt --hpo hp.owl \
+   --input benchmark_data.tsv --output vibe_5_0_output_dir
    ```
 
 Note: If data is already downloaded previously, you can omit `--download`.

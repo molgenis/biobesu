@@ -7,6 +7,7 @@ from os import access
 from os import R_OK
 from os import W_OK
 from os import X_OK
+from biobesu.helper.generic import create_dir
 
 
 def program(cmd):
@@ -39,16 +40,21 @@ def file(file_string, expected_extension='', executable=False):
         raise OSError('"' + file_name + '" is not an executable file')
 
 
-def directory(dir_string, writable=True):
+def directory(dir_string, writable=True, create_if_not_exist=False):
     """
     Checks whether given path goes to an existing directory. If not, raises an OSError.
     :param dir_string: directory path to check
     :param writable: check whether a directory is writable (default: True)
+    :param create_if_not_exist: creates directory before validating if true (default: False)
     """
 
     # Strips slash on the end and re-adds it so input directories are always coherent.
     dir_string = dir_string.rstrip('/') + '/'
     dir_name = dir_string.split('/')[-2]
+
+    # Creates directory if allowed before validating.
+    if create_if_not_exist:
+        create_dir(dir_string, exist_allowed=True)
 
     if not isdir(dir_string):
         raise OSError('"' + dir_name + '" is not a directory')

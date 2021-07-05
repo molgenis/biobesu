@@ -3,7 +3,7 @@
 from os import listdir
 
 
-def list_to_vibe_arguments(argument_list, argument):
+def convert_list_to_arguments_with_same_key(argument_list, argument):
     # Checks whether any elements are given, and if so, whether the first one isn't an empty String.
     # In case multiple elements are given, it is assumed it's not a list containing empty Strings.
     if len(argument_list) > 0 and len(argument_list[0]) > 0:

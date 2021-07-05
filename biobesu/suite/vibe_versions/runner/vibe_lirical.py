@@ -7,7 +7,7 @@ from biobesu.suite.hpo_generank.runner.lirical import __generate_phenopacket_fil
 from biobesu.suite.hpo_generank.runner.lirical import __run_lirical
 from biobesu.helper.generic import create_dir
 from biobesu.helper.readers import SeparatedValuesFileReader
-from biobesu.suite.vibe_versions.helper.converters import list_to_vibe_arguments
+from biobesu.suite.vibe_versions.helper.converters import convert_list_to_arguments_with_same_key
 from biobesu.suite.vibe_versions.helper.converters import merge_vibe_simple_output_files
 
 # Used only for docstring
@@ -20,11 +20,10 @@ def main(parser):
     try:
         # Repeat first 2 steps of lirical runner from hpo_generank to generate LIRICAL results.
         # If Lirical will be used in actual release, a better implementation solution might be chosen.
-        #phenopackets_dir = __generate_phenopacket_files(args)
-        #lirical_output_dir = __run_lirical(args, phenopackets_dir)
+        phenopackets_dir = __generate_phenopacket_files(args)
+        lirical_output_dir = __run_lirical(args, phenopackets_dir)
 
         # Extract OMIMs with score > 0.
-        lirical_output_dir = args.output + 'lirical_output/'
         lirical_omims_file = __extract_from_lirical_output(args, lirical_output_dir)
 
         # Run vibe.
@@ -162,8 +161,8 @@ def __run_vibe(args, lirical_omims_file):
     for key in hpo_dict.keys():
         output_file = f'{vibe_output_dir}{key}.tsv'
 
-        hpo_arguments = list_to_vibe_arguments(hpo_dict.get(key), '-p')
-        omim_arguments = list_to_vibe_arguments(omim_dict.get(key), '-m')
+        hpo_arguments = convert_list_to_arguments_with_same_key(hpo_dict.get(key), '-p')
+        omim_arguments = convert_list_to_arguments_with_same_key(omim_dict.get(key), '-m')
 
         call(f'java -jar {args.vibe_jar} -t {args.vibe_hdt} {hpo_arguments} {omim_arguments} '
              f'-o {output_file} -l', shell=True)
