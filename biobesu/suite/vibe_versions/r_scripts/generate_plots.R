@@ -10,12 +10,17 @@
 # and adjust the items in `benchmarkedVersions` (both can be found in the Config section).
 # 
 # When running through RStudio:
-# Be sure to add the input files to this directory or change the default paths.
+# 1. Copy the `benchmark_data.tsv` to the directory of this script.
+# 2. Create a subdirectory called `results`.
+# 3. Copy the merged output scripts from the benchmark runs into this directory.
+# 4. Run through RStudio.
 #
 # When running through the command line (Rscript):
-# `cd` to the directory containing this script and add the input files to this directory
-# or give all paths as arguments.
+# Run it with `RScripts` and provide all paths through the command line arguments OR
+# do step 1-3 above, `cd` to the directory of this script and run it through `RScript` without arguments
 ########
+
+
 
 ##################
 ### Config     ###
@@ -26,15 +31,9 @@
 library(optparse)
 options = list(
   make_option(c("-b", "--benchmark"), help="path to benchmark .tsv file", default="./benchmark_data.tsv"),
-  make_option(c("--lirical"), help="path to VIBE lirical .tsv file", default="./vibe_lirical.tsv"),
-  make_option(c("--v2.0"), help="path to VIBE v2.0 .tsv file", default="./vibe_2.0.tsv"),
-  make_option(c("--v5.0"), help="path to VIBE v5.0 .tsv file", default="./vibe_5.0.3.tsv"),
+  make_option(c("-r", "--results"), help="directory containing the benchmark result .tsv files (and no other files!)", default="./results/"),
   make_option(c("-o", "--output"), help="directory to write plots to", default="./")
 );
-
-# Names of the different benchmarks as retrieved from digested command line.
-# Change the arguments here if adding/remove benchmarks from the plots!
-benchmarkedVersions <- c("lirical", "v2.0", "v5.0")
 
 # Configuration based on whether run through RStudio or through command line Rscript.
 if(interactive()) {
@@ -44,6 +43,8 @@ if(interactive()) {
   # Disables writing Rplots.pdf file when script is done.
   pdf(NULL)
 }
+
+
 
 ##################
 ### Libraries  ###
@@ -185,6 +186,26 @@ calculateTotalGenesFound <- function(benchmarkResults) {
   unlist(lapply(sapply(benchmarkResults[,"suggested_genes"], strsplit, split=","), length), use.names=FALSE)
 }
 
+
+########
+# Name:
+# getLog10Position
+#
+# Description:
+# Calculates what value belongs to the given fraction for the input value when
+# Using a log10-scale.
+#
+# Input:
+# value - The value of which a fraction value should be calculated from.
+# fraction - The fraction to use for calculation.
+#
+# Output:
+# The fraction-value when using a log10 scale.
+########
+getLog10Position <- function(value, fraction) {
+  return(10^(log10(value)*fraction))
+}
+
 ##################
 ###    Code    ###
 ##################
@@ -194,7 +215,6 @@ calculateTotalGenesFound <- function(benchmarkResults) {
 ###
 params = parse_args(OptionParser(option_list=options));
 
-
 # Load benchmark input data (with ncbi gene id's).
 benchmarkData <- read.table(params$benchmark, header=T, sep="\t", colClasses=c("character"))
 
@@ -203,26 +223,34 @@ resultData <- list()
 positionResults <- data.frame(matrix(nrow=nrow(benchmarkData)), row.names=benchmarkData$id)
 totalResults <- data.frame(matrix(nrow=nrow(benchmarkData)), row.names=benchmarkData$id)
 
+# Generate list of result files.
+versionFiles <- list.files(params$results, full.names=TRUE)
+
+# Checks whether limit of 8 files is reached.
+stopifnot(length(versionFiles) <= 8)
+
 # Digests all results.
-for(version in benchmarkedVersions) {
-  resultData[[version]] <- sortRows(readResultFile(params[[version]]))
+for(versionFile in versionFiles) {
+  fileName <- tail(strsplit(versionFile, '/')[[1]], n=1) # Removes path.
+  version <- substr(fileName, 1, nchar(fileName)-4) # Removes '.tsv'
+  resultData[[version]] <- sortRows(readResultFile(versionFile))
   positionResults[[version]] <- resultsPositionCalculator(benchmarkData, resultData[[version]])
   totalResults[[version]] <- calculateTotalGenesFound(resultData[[version]])
 }
-rm(version)
+rm(versionFile, fileName, version)
 
 # Removes initial empty matrix.
 positionResults <- positionResults[,-1]
 totalResults <- totalResults[,-1]
 
 # Generate splitted genes for all tools: [[version]][[id]]@genes[[1]]
-setClass("suggestedGenes", representation(genes="vector"))
-toolOutputSplitted <- sapply(resultData, function(versionData) {
-  sapply(rownames(versionData), function(id, versionData) {
-    new("suggestedGenes", genes=strsplit(versionData[id,"suggested_genes"], ","))
-  }, versionData=versionData)
-}, simplify=FALSE)
-names(toolOutputSplitted) <- names(resultData)
+#setClass("suggestedGenes", representation(genes="vector"))
+#toolOutputSplitted <- sapply(resultData, function(versionData) {
+#  sapply(rownames(versionData), function(id, versionData) {
+#    new("suggestedGenes", genes=strsplit(versionData[id,"suggested_genes"], ","))
+#  }, versionData=versionData)
+#}, simplify=FALSE)
+#names(toolOutputSplitted) <- names(resultData)
 
 # Tool colors
 toolColors <- carto_pal(length(resultData), "Safe")
@@ -232,6 +260,19 @@ names(toolColors) <- names(resultData)
 ########## FIGURE 1 ##########
 ##############################
 ### Scatterplot with means and missing
+
+# Config.
+xMax <- max(totalResults)
+yMax <- max(positionResults, na.rm=TRUE)
+labCols <- 2
+xLabOptions <- rep(c(getLog10Position(xMax, 0.02),
+                     getLog10Position(xMax, 0.4)), labCols)
+yLabOptions <- c(rep(yMax, labCols),
+                 rep(getLog10Position(yMax, 0.9), labCols),
+                 rep(getLog10Position(yMax, 0.8), labCols),
+                 rep(getLog10Position(yMax, 0.7), labCols))
+
+
 
 # Preperations.
 posRelM <- melt(positionResults, id.vars = 0)
@@ -247,20 +288,20 @@ gd <- posRelM %>%
 toolNaRanks <- aggregate(rank ~ tool, data=posRelM, function(x) {sum(is.na(x))}, na.action = NULL)
 gd$NAs <- paste(toolNaRanks$tool, " (", toolNaRanks$rank, " missed)", sep="")
 
-gd$labX <- c(10, 130, 1200)
-gd$labY <- c(30000, 30000, 30000)
+gd$labX <- xLabOptions[1:length(resultData)]
+gd$labY <- yLabOptions[1:length(resultData)]
 
 # Plotting figure.
 ggplot() +
   geom_point(data = posRelM, aes(x=total, y=rank, color=tool), size = 0.3) +
   geom_point(data = gd, aes(x=total, y=rank, fill=tool), shape = 21, color = "black", stroke = 1, size = 2) +
   # legend stuff
-  geom_point(aes(x=11, y=150), color = "black", size=0.3) +
-  geom_text(aes(x=11, y=150, label = "= one causal gene"), color = "black", size = 2, hjust = 0, nudge_x = 0.1) +
-  geom_point(aes(x=11, y=300), shape = 1, color = "black", stroke = 1, size = 2) +
-  geom_text(aes(x=11, y=300, label="= tool X and Y means"), color="black", hjust = 0, size = 2, nudge_x = 0.1) +
-  geom_text(aes(x=8.5, y=30, label="Total: 308\ncausal genes"), color="black", hjust = 0, size = 2, nudge_x = 0.1) +
-  geom_label(data = gd, aes(x = labX, y = labY, label = NAs, fill = tool), color="white", hjust = 0, size = 2, fontface = "bold") +
+  geom_point(aes(x=getLog10Position(xMax, 0.05), y=getLog10Position(yMax, 0.2)), color = "black", size=0.3) +
+  geom_text(aes(x=getLog10Position(xMax, 0.05), y=getLog10Position(yMax, 0.2), label = "= one causal gene"), color = "black", size = 2, hjust = 0, nudge_x = 0.1) +
+  geom_point(aes(x=getLog10Position(xMax, 0.05), y=getLog10Position(yMax, 0.3)), shape = 1, color = "black", stroke = 1, size = 2) +
+  geom_text(aes(x=getLog10Position(xMax, 0.05), y=getLog10Position(yMax, 0.3), label="= tool X and Y means"), color="black", hjust = 0, size = 2, nudge_x = 0.1) +
+  geom_text(aes(x=getLog10Position(xMax, 0.02), y=getLog10Position(yMax, 0.05), label=paste0("Total: ", nrow(benchmarkData), "\ncausal genes")), color="black", hjust = 0, size = 2, nudge_x = 0.1) +
+  geom_label(data = gd, aes(x = labX, y = labY, label  = NAs, fill = tool), color="white", hjust = 0, size = 2, fontface = "bold") +
   scale_y_log10(breaks = c(1, 10, 100, 1000, 10000)) + scale_x_log10(breaks = c(1, 10, 100, 1000, 10000, 40000)) +
   theme_bw() +
   theme(panel.grid = element_blank(), panel.border = element_rect(colour = "black"), axis.ticks = element_line(colour = "black"), legend.position = "none", axis.text = element_text(color = "black")) +
