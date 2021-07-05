@@ -40,7 +40,8 @@ setup(
         ],
         'biobesu_vibe_versions': [
             'lirical = biobesu.suite.vibe_versions.runner.vibe_lirical:main',
-            '5.0 = biobesu.suite.vibe_versions.runner.vibe_5_0:main'
+            '5.0 = biobesu.suite.vibe_versions.runner.vibe_5_0:main',
+            '5.1 = biobesu.suite.vibe_versions.runner.vibe_5_1:main'
         ],
     },
     classifiers=[
