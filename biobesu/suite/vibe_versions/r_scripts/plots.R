@@ -1,14 +1,20 @@
 ########
 # Name:
-# PaperPlots.R
+# plots.R
 #
 # Description:
-# Generates plots for the paper from the result data. This script functions
-# completely independent and does not require the "BenchmarkResultsGenerics.R"
-# script.
-# 
+# Generates plots for this biobesu benchmark suite.
+#
 # Important:
-# Be sure to adjust the items in the config section before running the script!
+# When adjusting the benchmark versions, be sure to add/remove `make_option` in `options`
+# and adjust the items in `benchmarkedVersions` (both can be found in the Config section).
+# 
+# When running through RStudio:
+# Be sure to add the input files to this directory or change the default paths.
+#
+# When running through the command line (Rscript):
+# `cd` to the directory containing this script and add the input files to this directory
+# or give all paths as arguments.
 ########
 
 ##################
@@ -16,6 +22,7 @@
 ##################
 
 # Input arguments.
+# Change the arguments here if adding/remove benchmarks from the plots!
 library(optparse)
 options = list(
   make_option(c("-b", "--benchmark"), help="path to benchmark .tsv file", default="./benchmark_data.tsv"),
@@ -25,14 +32,17 @@ options = list(
   make_option(c("-o", "--output"), help="directory to write plots to", default="./")
 );
 
-# Names of the different benchmarks as retrieved from digested command line. 
+# Names of the different benchmarks as retrieved from digested command line.
+# Change the arguments here if adding/remove benchmarks from the plots!
 benchmarkedVersions <- c("lirical", "v2.0", "v5.0")
 
-# Sets working directory to script dir.
+# Configuration based on whether run through RStudio or through command line Rscript.
 if(interactive()) {
-  setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # Assumes RStudio
+  # Sets working directory to script dir.
+  setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 } else {
-  setwd(getSrcDirectory()[1])
+  # Disables writing Rplots.pdf file when script is done.
+  pdf(NULL)
 }
 
 ##################
@@ -188,43 +198,35 @@ params = parse_args(OptionParser(option_list=options));
 # Load benchmark input data (with ncbi gene id's).
 benchmarkData <- read.table(params$benchmark, header=T, sep="\t", colClasses=c("character"))
 
-# Loads benchmark results and sorts it so that row order is identical.
-vibeLirical <- sortRows(readResultFile(params$lirical))
-vibe2.0 <- sortRows(readResultFile(params$v2.0))
-vibe5.0 <- sortRows(readResultFile(params$v5.0))
+# Generates variables to store data in.
+resultData <- list()
+positionResults <- data.frame(matrix(nrow=nrow(benchmarkData)), row.names=benchmarkData$id)
+totalResults <- data.frame(matrix(nrow=nrow(benchmarkData)), row.names=benchmarkData$id)
 
-# Calculate absolute positions. This is done by processing benchmarkData row-by-row
-# and therefore the ID row order of positionResults is equal to that of benchmarkData.
-positionResults <- data.frame("vibe_lirical"=resultsPositionCalculator(benchmarkData, vibeLirical),
-                              "vibe_2.0"=resultsPositionCalculator(benchmarkData, vibe2.0),
-                              "vibe_5.0"=resultsPositionCalculator(benchmarkData, vibe5.0))
+# Digests all results.
+for(version in benchmarkedVersions) {
+  resultData[[version]] <- sortRows(readResultFile(params[[version]]))
+  positionResults[[version]] <- resultsPositionCalculator(benchmarkData, resultData[[version]])
+  totalResults[[version]] <- calculateTotalGenesFound(resultData[[version]])
+}
+rm(version)
 
-# Calculate total number of genes.
-totalResults <- data.frame("vibe_lirical"=calculateTotalGenesFound(vibeLirical),
-                           "vibe_2.0"=calculateTotalGenesFound(vibe2.0),
-                           "vibe_5.0"=calculateTotalGenesFound(vibe5.0),
-                           row.names=rownames(vibe2.0))
+# Removes initial empty matrix.
+positionResults <- positionResults[,-1]
+totalResults <- totalResults[,-1]
 
-# Replicates some of the totalResults so that size is equal to positionResults.
-totalResults <- totalResults[benchmarkData$id,]
-
-# Make sure to use same order as colnames(positionResults)!!!
-tools <- c("vibeLirical", "vibe2.0", "vibe5.0") # Names of variables used as input.
-toolNames <- c("vibe_lirical", "vibe_2.0", "vibe_5.0") # Names of the tools within the dataframe.
-
-# Generate splitted genes for all tools: [[tool]][[lovd]]@genes[[1]]
+# Generate splitted genes for all tools: [[version]][[id]]@genes[[1]]
 setClass("suggestedGenes", representation(genes="vector"))
-toolOutputSplitted <- sapply(tools, function(tool) {
-  toolData <- get(tool)
-  sapply(rownames(toolData), function(lovd, toolData) {
-    new("suggestedGenes", genes=strsplit(toolData[lovd,"suggested_genes"], ","))
-  }, toolData=toolData)
+toolOutputSplitted <- sapply(resultData, function(versionData) {
+  sapply(rownames(versionData), function(id, versionData) {
+    new("suggestedGenes", genes=strsplit(versionData[id,"suggested_genes"], ","))
+  }, versionData=versionData)
 }, simplify=FALSE)
-names(toolOutputSplitted) <- colnames(positionResults)
+names(toolOutputSplitted) <- names(resultData)
 
 # Tool colors
-toolColors <- carto_pal(3, "Safe")
-names(toolColors) <- toolNames
+toolColors <- carto_pal(length(resultData), "Safe")
+names(toolColors) <- names(resultData)
 
 ##############################
 ########## FIGURE 1 ##########
