@@ -329,3 +329,102 @@ ggSaveCustom("fig1", width=4, height=2.5)
 
 # Removes variables specific to this section.
 rm(posRelM,totResM,gd,toolNaRanks)
+
+
+
+##############################
+########## FIGURE 3 ##########
+##############################
+### Analysis to show practical value.
+
+# Defines number of runs.
+runs <- 25
+
+# Defines number of spiking genes.
+nSpikingGenes <- 19
+
+# Set seed for pseudo-random numbers for reproducibility.
+# Don't forget to reset seed when re-running code!!!
+set.seed(0)
+
+# Runs benchmark a number of times.
+enrichedScores <- sapply(1:runs, function(x, nSpikingGenes) {
+  # Generate sample matrix containing the genes to use for ranking (excluding the target gene).
+  cgdSample <- t(apply(benchmarkData, 1, function(case, nSpikingGenes) {
+    # Select all CGD genes minus the current causal one.
+    cgdMinusCurrentGene <- cgdData[!cgdData %in% case["gene_id"]]
+    # Randomly sample 19 other genes.
+    cgdSample <- sample(cgdMinusCurrentGene, nSpikingGenes)
+  }, nSpikingGenes=nSpikingGenes))
+  
+  # Goes through all cases.
+  runScores <- t(sapply(1:nrow(benchmarkData), function(nRow, benchmarkData, cgdSample, resultOutputSplitted) {
+    # Defines the target gene.
+    benchmarkGene <- benchmarkData[nRow,"gene_id"]
+    # Defines the full set of genes which need to be ranked (target + cgdSample).
+    geneSet <- c(benchmarkGene, cgdSample[nRow,])
+    
+    # Goes through all result sets.
+    sapply(names(resultOutputSplitted), function(resultSetName, id, benchmarkGene, geneSet, resultOutputSplitted) {
+      # Finds matches for the enriched gene set within the full output for that resultSet/id 
+      geneSetMatches <- match(geneSet, resultOutputSplitted[[resultSetName]][[id]]@genes[[1]])
+      # If benchmark gene is not found, returns adjusted score.
+      if(is.na(geneSetMatches[1])){
+        #return(mean(c(sum(!is.na(geneSetMatches)), length(geneSet)))) # method 1: missing rank middle of input set minus outsize, realistic
+        #return(length(geneSet)) # method 2: input set size, pessimistic, plot will spike at very end
+        #return(NA) # method 3: harsh: missing genes do NOT increase the cumulative hits, some lines go flat
+        return(sample(sum(!is.na(geneSetMatches)):length(geneSet), 1)) # method 4: missing rank at random position of input set minus outsize, super realistic
+      }
+      # Orders the found matches (NA=LAST).
+      geneSetOrdered <- geneSet[order(geneSetMatches)]
+      # Returns the found location of the target gene in the enriched gene set.
+      return(match(benchmarkGene, geneSetOrdered))
+    }, id=benchmarkData[nRow,"id"], benchmarkGene=benchmarkGene, geneSet=geneSet, resultOutputSplitted=resultOutputSplitted)
+  }, benchmarkData=benchmarkData, cgdSample=cgdSample, resultOutputSplitted=resultOutputSplitted))
+  
+  # Renames rows to their id.
+  rownames(runScores) <- benchmarkData$id
+  # Returns scores for each resultSet for a single run.
+  return(runScores)
+}, nSpikingGenes=nSpikingGenes, simplify=FALSE)
+
+# Calculate median per tool/case combination.
+MedianScores <- matrix(sapply(1:length(enrichedScores[[1]]), function(x) {
+  median(sapply(enrichedScores, "[[", x))
+}), ncol=ncol(positionResults), dimnames=list(benchmarkData$id, names(resultData)))
+
+# Genes found per cutoff.
+foundPerCutoff <- sapply(1:(nSpikingGenes+1), function(x) {
+  apply(MedianScores <= x,2,sum, na.rm=TRUE)
+})
+colnames(foundPerCutoff) <- 1:(nSpikingGenes+1)
+
+# Plot preparations.
+melted <- melt(t(foundPerCutoff))
+colnames(melted) <- c("cutoff", "tool", "value")
+
+# Plot configuration.
+xScaleMax <- ncol(foundPerCutoff)
+yScaleMin <- round_any(min(foundPerCutoff), 10, floor)
+yScaleMax <- round_any(max(foundPerCutoff), 10, ceiling)
+yScaleSteps <- round_any((yScaleMax - yScaleMin) / 6, 5)
+
+# Plot figure.
+ggplot() +
+  geom_line(data = melted, aes(x = cutoff, y = value, color = tool), size=1) +
+  geom_point(data = melted, aes(x = cutoff, y = value, color = tool), size=3) +
+  scale_color_manual(values = toolColors) +
+  scale_x_continuous(breaks = seq(1,xScaleMax,1), limits = c(1,xScaleMax)) +
+  scale_y_continuous(breaks = seq(yScaleMin,yScaleMax,yScaleSteps)) +
+  theme(text = element_text(size=20), legend.title=element_blank(), legend.position = c(0.7, 0.45),
+        panel.background = element_blank(), legend.key = element_blank(), legend.background = element_blank(),
+        legend.text = element_text(size=12), legend.key.width = unit(2, "cm"), legend.key.height = unit(1, "cm")) +
+  labs(x = "Gene rank in simulated spiked-in clinical gene sets", y = "Cumul. nr. of causal genes detected")
+grid.ls(grid.force())
+grid.gedit("key-[0-9]*-1-2", size = unit(8, "mm"))
+myPlot <- (grid.grab())
+ggSaveCustomWithPlot("fig3", width=8, height=5, plot=myPlot)
+
+
+# Removes variables specific to this section.
+rm(runs,spikingGenes,enrichedScores,MedianScores,foundPerCutoff,melted)
