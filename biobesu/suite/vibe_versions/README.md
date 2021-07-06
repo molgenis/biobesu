@@ -38,7 +38,7 @@ IMPORTANT: The `id` field must be unique!
 
 ## Generate plots
 First, additional required data needs to be downloaded to generate the plots:
-- [CGD.txt](https://research.nhgri.nih.gov/CGD/download/) ([2021-08-06 release](https://downloads.molgeniscloud.org/downloads/biobesu/CGD_2021-08-06.txt))
+- [CGD.txt](https://research.nhgri.nih.gov/CGD/download/) ([2021-06-08 release](https://downloads.molgeniscloud.org/downloads/biobesu/CGD_2021-06-08.txt))
 
 There are several ways to generate the plots:
 - Opening the R script in RStudio. 
