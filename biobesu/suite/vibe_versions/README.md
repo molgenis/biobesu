@@ -37,19 +37,18 @@ IMPORTANT: The `id` field must be unique!
    ```
 
 ## Generate plots
+First, additional required data needs to be downloaded to generate the plots:
+- [CGD.txt](https://research.nhgri.nih.gov/CGD/download/) ([2021-08-06 release](https://downloads.molgeniscloud.org/downloads/biobesu/CGD_2021-08-06.txt))
+
 There are several ways to generate the plots:
-- Opening the R script in RStudio.  
-  Requires either:
-    - Storing the benchmark file inside the `r_scripts` directory and the run output files inside a subdirectory called `results`.
-    - Adjusting the `default` paths found in the `Config` section.
+- Opening the R script in RStudio. 
+  Requires adjusting the `default` paths found in the `Config` section or moving the data to the paths as described.  
 - Running the script through the command line.  
-  Requires either:
-  - Giving the correct paths through the command line arguments (after copying all output files to a single directory).
-  - Storing the benchmark file inside the `r_scripts` directory and the run output files inside a subdirectory called `results` (the default paths).
+  Requires using the command line arguments to define the paths to the data or moving the data to the paths as described.
 
 Example flow of running this script:
 1. Copy all output files of each ran benchmark to a single (new) directory.
 2. Run the R script:
     ```bash
-    Rscript generate_plots.R -b benchmark_data.tsv -r benchmark_results/ -o ./
+    Rscript generate_plots.R -b benchmark_data.tsv -r benchmark_results/ -c CGD_2021-06-08.txt -o ./plots/
     ```
