@@ -427,4 +427,4 @@ ggSaveCustomWithPlot("fig3", width=8, height=5, plot=myPlot)
 
 
 # Removes variables specific to this section.
-rm(runs,spikingGenes,enrichedScores,MedianScores,foundPerCutoff,melted)
+rm(runs,nSpikingGenes,enrichedScores,MedianScores,foundPerCutoff,melted)
