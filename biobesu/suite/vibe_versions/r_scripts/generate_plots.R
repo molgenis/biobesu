@@ -23,14 +23,28 @@
 
 
 ##################
+### Libraries  ###
+##################
+
+library(optparse)
+library(rcartocolor)
+library(plyr)
+library(dplyr)
+library(reshape2)
+library(ggplot2)
+library(grid)
+
+
+
+##################
 ### Config     ###
 ##################
 
 # Input arguments.
-library(optparse)
 options = list(
-  make_option(c("-b", "--benchmark"), help="path to benchmark .tsv file", default="./benchmark_data.tsv"),
-  make_option(c("-r", "--results"), help="directory containing the benchmark result .tsv files (and no other files!)", default="./results/"),
+  make_option(c("-b", "--benchmark"), help="path to benchmark .tsv file", default="~/Programming/data/biobesu/benchmark_data/moon.tsv"),
+  make_option(c("-r", "--results"), help="directory containing the benchmark result .tsv files (and no other files!)", default="~/Programming/data/biobesu/vibe_versions/moon/_output_files/"),
+  make_option(c("-c", "--cgd"), help="path to cgd .tsv file", default="~/Programming/data/biobesu/benchmark_data/CGD_2021-06-08.txt"),
   make_option(c("-o", "--output"), help="directory to write plots to", default="./")
 );
 
@@ -44,16 +58,6 @@ if(interactive()) {
 }
 
 
-
-##################
-### Libraries  ###
-##################
-
-library(rcartocolor)
-library(plyr)
-library(dplyr)
-library(reshape2)
-library(ggplot2)
 
 ##################
 ### Functions  ###
@@ -77,6 +81,9 @@ library(ggplot2)
 ########
 ggSaveCustom <- function(fileName, width, height) {
   ggsave(paste0(params$output, fileName, ".pdf"), width=width, height=height)
+}
+ggSaveCustomWithPlot <- function(fileName, width, height, plot) {
+  ggsave(paste0(params$output, fileName, ".pdf"), plot=plot, width=width, height=height)
 }
 
 ########
@@ -205,6 +212,8 @@ getLog10Position <- function(value, fraction) {
   return(10^(log10(value)*fraction))
 }
 
+
+
 ##################
 ###    Code    ###
 ##################
@@ -217,26 +226,30 @@ params = parse_args(OptionParser(option_list=options));
 # Load benchmark input data (with ncbi gene id's).
 benchmarkData <- read.table(params$benchmark, header=T, sep="\t", colClasses=c("character"))
 
+# Load & filter cgd data.
+cgdData <- read.table(params$cgd, header=T, sep="\t", colClasses=c("character"), comment.char = "", quote="")
+cgdData <- cgdData$ENTREZ.GENE.ID
+
 # Generates variables to store data in.
 resultData <- list()
 positionResults <- data.frame(matrix(nrow=nrow(benchmarkData)), row.names=benchmarkData$id)
 totalResults <- data.frame(matrix(nrow=nrow(benchmarkData)), row.names=benchmarkData$id)
 
 # Generate list of result files.
-versionFiles <- list.files(params$results, full.names=TRUE)
+resultFiles <- list.files(params$results, full.names=TRUE)
 
-# Checks whether limit of 8 files is reached.
-stopifnot(length(versionFiles) <= 8)
+# Checks whether limit of 6 files is reached.
+stopifnot(length(resultFiles) <= 6)
 
 # Digests all results.
-for(versionFile in versionFiles) {
-  fileName <- tail(strsplit(versionFile, '/')[[1]], n=1) # Removes path.
+for(resultFile in resultFiles) {
+  fileName <- tail(strsplit(resultFile, '/')[[1]], n=1) # Removes path.
   version <- substr(fileName, 1, nchar(fileName)-4) # Removes '.tsv'
-  resultData[[version]] <- sortRows(readResultFile(versionFile))
+  resultData[[version]] <- sortRows(readResultFile(resultFile))
   positionResults[[version]] <- resultsPositionCalculator(benchmarkData, resultData[[version]])
   totalResults[[version]] <- calculateTotalGenesFound(resultData[[version]])
 }
-rm(versionFile, fileName, version)
+rm(resultFile, fileName, version)
 
 # Removes initial empty matrix.
 positionResults <- positionResults[,-1]
@@ -244,12 +257,12 @@ totalResults <- totalResults[,-1]
 
 # Generate splitted genes for all tools: [[version]][[id]]@genes[[1]]
 setClass("suggestedGenes", representation(genes="vector"))
-toolOutputSplitted <- sapply(resultData, function(versionData) {
-  sapply(rownames(versionData), function(id, versionData) {
-    new("suggestedGenes", genes=strsplit(versionData[id,"suggested_genes"], ","))
-  }, versionData=versionData)
+resultOutputSplitted <- sapply(resultData, function(singleResultData) {
+  sapply(rownames(singleResultData), function(id, singleResultData) {
+    new("suggestedGenes", genes=strsplit(singleResultData[id,"suggested_genes"], ","))
+  }, singleResultData=singleResultData)
 }, simplify=FALSE)
-names(toolOutputSplitted) <- names(resultData)
+names(resultOutputSplitted) <- names(resultData)
 
 # Tool colors
 if(length(resultData) > 2) {
