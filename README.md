@@ -31,7 +31,7 @@ biobesu
 biobesu <suite>
 ```
 
-There are several scripts which can be executed directly. Do note that some of these require `entry_points` from the `setup.py` to function correctly, so installing biobesu with pip is still required.
+There are several scripts which can be executed directly. Do note that some of these require `entry_points` from the `setup.py` to function correctly, so installing BioBeSu with pip is still required.
 
 **Example:**
 ```bash
