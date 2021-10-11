@@ -5,7 +5,7 @@ from biobesu.helper.argument_parser import BiobesuParser
 
 
 class VibeRunner5_1(VibeRunner5_0):
-    JAR_FILENAME = 'vibe-with-dependencies-5.1.4.jar'
+    JAR_FILENAME = 'vibe-with-dependencies-5.1.5.jar'
     HDT_FILENAME = 'vibe-5.1.0.hdt'
     FINAL_OUTPUT_FILE = 'vibe_5.1.0.tsv'
 
