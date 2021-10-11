@@ -12,6 +12,12 @@ biobesu.egg-info/
 *.pyc
 __pychache__/
 
+# Python virtual environment
+venv/
+
+# Pytest chache
+.pytest_cache/
+
 # Tool files
 lirical.log
 
