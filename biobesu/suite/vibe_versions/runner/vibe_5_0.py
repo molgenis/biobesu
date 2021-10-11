@@ -51,16 +51,16 @@ class VibeRunner5_0:
         """
 
         # Adds runner-specific command line & parses it.
-        parser.add_argument('--input', required=True,
+        parser.add_argument('-i', '--input', required=True,
                             help='input tsv benchmark file')
-        parser.add_argument('--output', required=True,
+        parser.add_argument('-o', '--output', required=True,
                             help='directory to write output to')
-        parser.add_argument('--jar', required=True,
+        parser.add_argument('-j', '--jar', required=True,
                             help='directory containing VIBE jar')
-        parser.add_argument('--hdt', required=True,
+        parser.add_argument('-d', '--hdt', required=True,
                             help='directory containing VIBE database')
-        parser.add_argument('--hpo', required=True,
-                            help='hpo.obo file')  # Not used but required.
+        parser.add_argument('-p', '--hpo', required=True,
+                            help='hpo.owl file')  # Not used but required.
 
         # Processes command line.
         try:
@@ -94,7 +94,7 @@ class VibeRunner5_0:
                                                         '-p')
 
             call(f'java -jar {self.args.jar} -l '
-                 f'{hpo_arguments}'
+                 f'{hpo_arguments} '
                  f'-t {self.args.hdt} '
                  f'-o {output_file} '
                  f'-w {self.args.hpo}',

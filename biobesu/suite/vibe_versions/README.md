@@ -26,7 +26,7 @@ IMPORTANT: The `id` field must be unique!
 ### VIBE v5.1
 
 1. Download/unpack VIBE + resources:
-    - [vibe-with-dependencies-5.1.4.jar](https://github.com/molgenis/vibe/releases/download/vibe-5.1.4/vibe-with-dependencies-5.1.4.jar)
+    - [vibe-with-dependencies-5.1.5.jar](https://github.com/molgenis/vibe/releases/download/vibe-5.1.5/vibe-with-dependencies-5.1.5.jar)
     - [vibe-5.1.0-hdt.tar.gz](https://downloads.molgeniscloud.org/downloads/vibe/vibe-5.1.0-hdt.tar.gz)
     - [hp.owl](http://purl.obolibrary.org/obo/hp/releases/2018-03-08/hp.owl) (same as VIBE v5.0 benchmark)
 
