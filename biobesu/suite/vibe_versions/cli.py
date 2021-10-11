@@ -9,7 +9,8 @@ def main(parser):
     runners = retrieve_entry_point('biobesu_vibe_versions')
 
     # Adds suite-specific command line.
-    parser.add_argument('runner', help='a runner from this suite:\n' + '\n'.join(runners))
+    parser.add_argument('runner', help='a runner from this suite:\n' +
+                                       '\n'.join(runners))
 
     # Processes command line.
     args, unknown_args = parser.parse_known_args()
