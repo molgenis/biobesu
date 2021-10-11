@@ -12,6 +12,7 @@ def test_list_to_vibe_arguments_empty_list():
 
     assert actual_output == expected_output
 
+
 def test_list_to_vibe_arguments_single_item():
     input_list = ['OMIM:012345']
 
@@ -20,6 +21,7 @@ def test_list_to_vibe_arguments_single_item():
         converters.convert_list_to_arguments_with_same_key(input_list, '-m')
 
     assert actual_output == expected_output
+
 
 def test_list_to_vibe_arguments_list():
     input_list = ['OMIM:012345', 'OMIM:543210']
