@@ -101,7 +101,7 @@ class VibeRunner5_0:
         with open(self.times_output_file, 'a') as times_writer:
             # Adds header if file did not already exist.
             if time_file_add_header:
-                times_writer.write('id\ttime (%H:%M:%S.%f)\n')
+                times_writer.write('id\ttime (in seconds)\n')
             # Processes all HPO input sets.
             for key in hpo_dict.keys():
                 print(f'Running VIBE: {key}')
@@ -132,7 +132,7 @@ class VibeRunner5_0:
              shell=True)
 
         time_elapsed = perf_counter() - time_start
-        times_writer.write(f'{run_id}\t{time_elapsed}s\n')
+        times_writer.write(f'{run_id}\t{time_elapsed}\n')
 
 
 def main(parser):
