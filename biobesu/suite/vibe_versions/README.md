@@ -20,7 +20,7 @@ IMPORTANT: The `id` field must be unique!
 2. Run VIBE:
    ```bash
    biobesu vibe_versions 5.0 --jar vibe-with-dependencies-5.0.3.jar --hdt vibe-5.0.0-hdt/vibe-5.0.0.hdt --hpo hp.owl \
-   --input benchmark_data.tsv --output vibe_5_0_output_dir
+   --input benchmark_data.tsv --output vibe_versions_output_dir
    ```
 
 ### VIBE v5.1
@@ -33,7 +33,7 @@ IMPORTANT: The `id` field must be unique!
 2. Run VIBE:
    ```bash
    biobesu vibe_versions 5.1 --jar vibe-with-dependencies-5.1.4.jar --hdt vibe-5.1.0-hdt/vibe-5.1.0.hdt --hpo hp.owl \
-   --input benchmark_data.tsv --output vibe_5_1_output_dir
+   --input benchmark_data.tsv --output vibe_versions_output_dir
    ```
 
 ## Generate plots

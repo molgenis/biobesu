@@ -59,7 +59,7 @@ class VibeRunner5_0:
         parser.add_argument('-i', '--input', required=True,
                             help='input tsv benchmark file')
         parser.add_argument('-o', '--output', required=True,
-                            help='directory to write output to')
+                            help='directory to create subdir with output in')
         parser.add_argument('-j', '--jar', required=True,
                             help='directory containing VIBE jar')
         parser.add_argument('-d', '--hdt', required=True,
