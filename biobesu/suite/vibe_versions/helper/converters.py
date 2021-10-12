@@ -3,13 +3,22 @@
 from os import listdir
 
 
-def convert_list_to_arguments_with_same_key(argument_list, argument):
-    # Checks whether any elements are given, and if so, whether the first one isn't an empty String.
-    # In case multiple elements are given, it is assumed it's not a list containing empty Strings.
-    if len(argument_list) > 0 and len(argument_list[0]) > 0:
-        return f'{argument} ' + f' {argument} '.join(argument_list)
-    else:
-        return ''
+def convert_list_to_arguments_with_same_key(argument_list, argument_key):
+    """
+    Converts a list of items to command-line arguments. argument_list can be
+    an empty list, though any strings in it should be non-empty.
+    :param list[str] argument_list: the argument values
+    :param str argument_key: the key to be used for the arguments
+    :return: str
+    :raise ValueError: if empty string is found in list
+    """
+    argument_string = ''
+
+    for argument in argument_list:
+        if len(argument) == 0:
+            raise ValueError('list must contain non-empty strings')
+        argument_string += f' {argument_key} {argument}'
+    return argument_string.lstrip()
 
 
 def merge_vibe_simple_output_files(vibe_dir, out_file):
