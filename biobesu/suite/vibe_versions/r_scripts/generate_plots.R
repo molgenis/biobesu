@@ -1,21 +1,20 @@
 ########
 # Name:
-# plots.R
+# generate_plots.R
 #
 # Description:
 # Generates plots for this biobesu benchmark suite.
 #
 # Important:
-# When adjusting the benchmark versions, be sure to add/remove `make_option` in `options`
-# and adjust the items in `benchmarkedVersions` (both can be found in the Config section).
+# Script automatically loads all files given within the directory given through the `--results` option.
+# Be sure this directory only contains result .tsv files and not more than 6 of these!
+# When running Biobesu, these files need to be collected from their individual output directories first.
 # 
 # When running through RStudio:
-# 1. Copy the `benchmark_data.tsv` to the directory of this script.
-# 2. Create a subdirectory called `results`.
-# 3. Copy the merged output scripts from the benchmark runs into this directory.
-# 4. Run through RStudio.
+# Ensure all `default` values in `options` are adjusted to their correct paths before running.
 #
 # When running through the command line (Rscript):
+# Rscript /path/to/generate_plots.R -b benchmark_input.tsv -r /path/to/benchmark_output/ -c CGD_2021-06-08.txt  -o /path/to/plots/dir/
 # Run it with `RScripts` and provide all paths through the command line arguments OR
 # do step 1-3 above, `cd` to the directory of this script and run it through `RScript` without arguments
 ########
@@ -389,13 +388,13 @@ enrichedScores <- sapply(1:runs, function(x, nSpikingGenes) {
 }, nSpikingGenes=nSpikingGenes, simplify=FALSE)
 
 # Calculate median per tool/case combination.
-MedianScores <- matrix(sapply(1:length(enrichedScores[[1]]), function(x) {
+medianScores <- matrix(sapply(1:length(enrichedScores[[1]]), function(x) {
   median(sapply(enrichedScores, "[[", x))
 }), ncol=ncol(positionResults), dimnames=list(benchmarkData$id, names(resultData)))
 
 # Genes found per cutoff.
 foundPerCutoff <- sapply(1:(nSpikingGenes+1), function(x) {
-  apply(MedianScores <= x,2,sum, na.rm=TRUE)
+  apply(medianScores <= x,2,sum, na.rm=TRUE)
 })
 colnames(foundPerCutoff) <- 1:(nSpikingGenes+1)
 
@@ -427,4 +426,4 @@ ggSaveCustomWithPlot("fig3", width=8, height=5, plot=myPlot)
 
 
 # Removes variables specific to this section.
-rm(runs,nSpikingGenes,enrichedScores,MedianScores,foundPerCutoff,melted)
+rm(runs,nSpikingGenes,enrichedScores,medianScores,foundPerCutoff,melted)
