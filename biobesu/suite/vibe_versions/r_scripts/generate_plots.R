@@ -404,9 +404,9 @@ colnames(melted) <- c("cutoff", "tool", "value")
 
 # Plot configuration.
 xScaleMax <- ncol(foundPerCutoff)
-yScaleMin <- round_any(min(foundPerCutoff), 10, floor)
-yScaleMax <- round_any(max(foundPerCutoff), 10, ceiling)
-yScaleSteps <- round_any((yScaleMax - yScaleMin) / 6, 5)
+yScaleMin <- round_any(min(foundPerCutoff), 5, floor)
+yScaleMax <- round_any(max(foundPerCutoff), 5, ceiling)
+yScaleSteps <- max(5, round_any((yScaleMax - yScaleMin) / 6, 5))
 
 # Plot figure.
 ggplot() +
@@ -414,7 +414,7 @@ ggplot() +
   geom_point(data = melted, aes(x = cutoff, y = value, color = tool), size=3) +
   scale_color_manual(values = toolColors) +
   scale_x_continuous(breaks = seq(1,xScaleMax,1), limits = c(1,xScaleMax)) +
-  scale_y_continuous(breaks = seq(yScaleMin,yScaleMax,yScaleSteps)) +
+  scale_y_continuous(limits=c(yScaleMin, yScaleMax), breaks = seq(yScaleMin,yScaleMax,yScaleSteps)) +
   theme(text = element_text(size=20), legend.title=element_blank(), legend.position = c(0.7, 0.45),
         panel.background = element_blank(), legend.key = element_blank(), legend.background = element_blank(),
         legend.text = element_text(size=12), legend.key.width = unit(2, "cm"), legend.key.height = unit(1, "cm")) +
