@@ -14,9 +14,9 @@
 # Ensure all `default` values in `options` are adjusted to their correct paths before running.
 #
 # When running through the command line (Rscript):
-# Rscript /path/to/generate_plots.R -b benchmark_input.tsv -r /path/to/benchmark_output/ -c CGD_2021-06-08.txt  -o /path/to/plots/dir/
-# Run it with `RScripts` and provide all paths through the command line arguments OR
-# do step 1-3 above, `cd` to the directory of this script and run it through `RScript` without arguments
+# Rscript generate_plots.R -b benchmark_data.tsv -r benchmark_results/ -c CGD_2021-06-08.txt -o ./plots/
+# OR
+# Prepare as described for RStudio, `cd` to directory of this script and run `Rscript`.
 ########
 
 
