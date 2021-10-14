@@ -54,8 +54,20 @@ cd biobesu
 python3 -m venv venv
 source venv/bin/activate
 pip install --editable '.[test]'
+```
+
+### Testing
+#### Command line
+```
+source venv/bin/activate  # if not yet loaded
 pytest test/
 ```
+
+#### IDEs
+When running the tests through an IDE, be sure pytest is selected!
+
+In PyCharm/IntelliJ IDEA: `Preferences -> Tools -> Python Integrated Tools -> Default test runner`
+
 
 ### Structure
 
