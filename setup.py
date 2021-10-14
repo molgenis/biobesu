@@ -32,10 +32,15 @@ setup(
             'biobesu = biobesu.cli:main'
         ],
         'biobesu_suites': [
-            'hpo_generank = biobesu.suite.hpo_generank.cli:main'
+            'hpo_generank = biobesu.suite.hpo_generank.cli:main',
+            'vibe_versions = biobesu.suite.vibe_versions.cli:main'
         ],
         'biobesu_hpo_generank': [
             'lirical = biobesu.suite.hpo_generank.runner.lirical:main'
+        ],
+        'biobesu_vibe_versions': [
+            '5.0 = biobesu.suite.vibe_versions.runner.vibe_5_0:main',
+            '5.1 = biobesu.suite.vibe_versions.runner.vibe_5_1:main'
         ],
     },
     classifiers=[

@@ -51,21 +51,23 @@ biobesu hpo_generank lirical --jar /path/to/lirical-1.3.0/LIRICAL.jar \
 ```bash
 git clone git@github.com:molgenis/biobesu.git
 cd biobesu
+python3 -m venv venv
+source venv/bin/activate
 pip install --editable '.[test]'
+```
+
+### Testing
+#### Command line
+```
+source venv/bin/activate  # if not yet loaded
 pytest test/
 ```
 
-#### Intellij IDEA
-1. `git clone git@github.com:molgenis/biobesu.git`
-2. In Intellij IDEA, install the Python module if not yet installed (Preferences -> Plugins).
-3. Open the project folder in Intellij IDEA.
-4. Go to "File -> Project Structure -> SDKs" and select/create a Python virtual environment.
-5. Open `setup.py` and install any missing packages.
+#### IDEs
+When running the tests through an IDE, be sure pytest is selected!
 
-For scripts that can be run independently, you can set up run configurations to easily test these scripts.
+In PyCharm/IntelliJ IDEA: `Preferences -> Tools -> Python Integrated Tools -> Default test runner`
 
-Be sure to use pytest when running the tests using Intellij IDEA.
-You can change the default test interpreter in `Preferences -> Tools -> Python Integrated Tools -> Default test runner `.
 
 ### Structure
 

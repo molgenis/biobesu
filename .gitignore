@@ -12,5 +12,15 @@ biobesu.egg-info/
 *.pyc
 __pychache__/
 
+# Python virtual environment
+venv/
+
+# Pytest chache
+.pytest_cache/
+
 # Tool files
 lirical.log
+
+# All files except actual R scripts.
+**/r_scripts/*
+!**/r_scripts/*.R*
