@@ -32,24 +32,38 @@ def file(file_string, expected_extension='', executable=False):
     file_name = file_string.split('/')[-1]
     if not isfile(file_string):
         raise OSError(f'"{file_name}" is not a file')
-    if expected_extension != '' and not file_string.endswith(expected_extension):
-        raise OSError(f'"{file_name}" is not a {expected_extension} file')
+    filename(file_string, expected_extension)
     if not access(file_string, R_OK):
         raise OSError(f'"{file_name}" is not a readable file')
     if executable and not access(file_string, X_OK):
         raise OSError(f'"{file_name}" is not an executable file')
 
 
-def directory(dir_string, writable=True, create_if_not_exist=False):
+def filename(file_string, expected_extension=''):
+    file_name = file_string.split('/')[-1]
+    if len(file_name) == 0:
+        raise OSError(f'"{file_string}" ends with a "/", but must also contain a file name!')
+    if expected_extension != '' and not file_string.endswith(expected_extension):
+        raise OSError(f'"{file_name}" is not a {expected_extension} file')
+
+
+def directory(dir_string, writable=True, create_if_not_exist=False, remove_filename=False):
     """
     Checks whether given path goes to an existing directory. If not, raises an OSError.
     :param dir_string: directory path to check
     :param writable: check whether a directory is writable (default: True)
     :param create_if_not_exist: creates directory before validating if true (default: False)
+    :param remove_filename: removes filanem from dir_string (default: False)
     """
+
+    # Removes filename from path.
+    if remove_filename:
+        dir_string = '/'.join(dir_string.split('/')[0:-1])
 
     # Strips slash on the end and re-adds it so input directories are always coherent.
     dir_string = dir_string.rstrip('/') + '/'
+
+    # Gets name of last dir.
     dir_name = dir_string.split('/')[-2]
 
     # Creates directory if allowed before validating.

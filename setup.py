@@ -36,7 +36,8 @@ setup(
             'vibe_versions = biobesu.suite.vibe_versions.cli:main'
         ],
         'biobesu_hpo_generank': [
-            'lirical = biobesu.suite.hpo_generank.runner.lirical:main'
+            'lirical = biobesu.suite.hpo_generank.runner.lirical:main',
+            'hpo2gene = biobesu.suite.hpo_generank.runner.phenotype_to_genes:main'
         ],
         'biobesu_vibe_versions': [
             '5.0 = biobesu.suite.vibe_versions.runner.vibe_5_0:main',

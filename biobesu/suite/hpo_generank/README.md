@@ -2,9 +2,9 @@
 ## General
 The `benchmark_data.tsv` input file is expected to have the following format:
 ```
-id  gene_symbol    hpo_ids
-01  A1BG    HP:0001234,HP:0004321
-02  A1CF    HP:0000888
+id  gene_id    hpo_ids
+01  1    HP:0001234,HP:0004321
+02  29974    HP:0000888
 ```
 
 ## Lirical
