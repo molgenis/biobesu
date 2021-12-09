@@ -280,16 +280,19 @@ names(toolColors) <- names(resultData)
 xMax <- max(totalResults)
 yMax <- max(positionResults, na.rm=TRUE)
 labCols <- 2
-xLabOptions <- c(rep(c(getLog10Position(xMax, 0.02),
-                     getLog10Position(xMax, 0.4)), 3),
-                 rep(getLog10Position(xMax, 0.02), 4))
-yLabOptions <- c(rep(yMax, 2),
-                 rep(getLog10Position(yMax, 0.9), labCols),
-                 rep(getLog10Position(yMax, 0.8), labCols),
-                 getLog10Position(yMax, 0.7),
-                 getLog10Position(yMax, 0.6),
-                 getLog10Position(yMax, 0.5),
-                 getLog10Position(yMax, 0.4))
+xLabOptions <- c(getLog10Position(xMax, 0.0),
+                 getLog10Position(xMax, 0.4),
+                 getLog10Position(xMax, 0.7),
+                 rep(c(getLog10Position(xMax, 0.0),
+                     getLog10Position(xMax, 0.4)), 2),
+                 rep(getLog10Position(xMax, 0.0), 4))
+yLabOptions <- c(rep(yMax, 3),
+                 rep(getLog10Position(yMax, 0.91), labCols),
+                 rep(getLog10Position(yMax, 0.82), labCols),
+                 getLog10Position(yMax, 0.73),
+                 getLog10Position(yMax, 0.64),
+                 getLog10Position(yMax, 0.55),
+                 getLog10Position(yMax, 0.46))
 
 
 
@@ -402,14 +405,25 @@ foundPerCutoff <- sapply(1:(nSpikingGenes+1), function(x) {
 })
 colnames(foundPerCutoff) <- 1:(nSpikingGenes+1)
 
+# Removes latter values if they say the same till the end.
+# Enable (make variable "foundPerCutoff") if using method 3.
+foundPerCutoff.unused <- t(apply(foundPerCutoff, 1, function(toolFoundPerCutoff) {
+  firstMaxValue <- which(toolFoundPerCutoff == last(toolFoundPerCutoff))[1]
+  nCutoffs <- length(toolFoundPerCutoff)
+  if(firstMaxValue < nCutoffs) {
+    toolFoundPerCutoff[(firstMaxValue+1):nCutoffs] <- NA
+  }
+  return(toolFoundPerCutoff)
+}))
+
 # Plot preparations.
 melted <- melt(t(foundPerCutoff))
 colnames(melted) <- c("cutoff", "tool", "value")
 
 # Plot configuration.
 xScaleMax <- ncol(foundPerCutoff)
-yScaleMin <- round_any(min(foundPerCutoff), 5, floor)
-yScaleMax <- round_any(max(foundPerCutoff), 5, ceiling)
+yScaleMin <- round_any(min(foundPerCutoff, na.rm=TRUE), 5, floor)
+yScaleMax <- round_any(max(foundPerCutoff, na.rm=TRUE), 5, ceiling)
 yScaleSteps <- max(5, round_any((yScaleMax - yScaleMin) / 6, 5))
 
 # Plot figure.
@@ -422,9 +436,10 @@ ggplot() +
   theme(text = element_text(size=20), legend.title=element_blank(), legend.position = c(0.7, 0.45),
         panel.background = element_blank(), legend.key = element_blank(), legend.background = element_blank(),
         legend.text = element_text(size=12), legend.key.width = unit(2, "cm"), legend.key.height = unit(1, "cm")) +
+  guides(colour=guide_legend(ncol=2,byrow=TRUE)) +
   labs(x = "Gene rank in simulated spiked-in clinical gene sets", y = "Cumul. nr. of causal genes detected")
 grid.ls(grid.force())
-grid.gedit("key-[0-9]*-1-2", size = unit(8, "mm"))
+grid.gedit("key-[0-9]*-[0-9]*-2", size = unit(8, "mm"))
 myPlot <- (grid.grab())
 ggSaveCustomWithPlot("fig3", width=8, height=5, plot=myPlot)
 
